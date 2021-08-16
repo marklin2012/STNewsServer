@@ -126,7 +126,7 @@ yarn dev      # 开发以启动项目
 | **test:**     | 增加测试   |
 | **chore:**     | 构建过程或辅助工具的变动   |
 
-> 比如我在 Flutter Package 工程里新增了一个组件， commit 的格式就是 feat:新增XX组件
+> 比如我在工程里新增了一个组件， commit 的格式就是 feat:新增XX组件
 
 # 代码提交
 
@@ -137,3 +137,39 @@ yarn dev      # 开发以启动项目
 - 检查每行被 staged 的代码，不要提交无关重要的代码！
 - 不要提交无意义的 `print()`
 - 合并代码时记得通过提 PR 的方式，并且 assign 给管理员：
+
+
+# 如何开发接口
+
+1. 创建 Model， 定义数据结构
+2. 创建 controller 文件，编写业务逻辑
+3. 在 `router.ts` 里给 API 添加路由
+
+具体操作如下（以 testUser 为例）:
+
+## 1. 创建 Model，定义数据结构
+
+在 `app/model/` 下新建 `user.ts` 文件
+
+定义 Model 时，注意以下几点：
+
+1. 必填字段，需加上 `required: true`
+2. 对于需要被检索的字段，需加上索引 `index: true`
+3. 如果该数据可以被删除，需加上 `deleted` 字段
+
+## 2. 创建 controller 文件，编写业务逻辑
+
+在 `app/controller/` 下新建 `user.ts`, 并实现业务逻辑
+
+## 3. 在 `router.ts` 里给 API 添加路由
+
+在 `app/router.ts` 文件内添加接口路由
+
+例如： 
+
+```js
+router.get('/test/adduser', controller.user.addUserTest)
+```
+
+
+
