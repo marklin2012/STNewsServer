@@ -25,10 +25,6 @@ export class Comment extends BaseModel {
   @prop({ required: true })
   public published_date: string
 
-  // 点赞的用户 默认 type 为 ObjectId
-  @prop({ ref: 'User', default: [] })
-  public favourites?: Ref<User>[]
-
   // 是否置顶
   @prop()
   public is_top: boolean

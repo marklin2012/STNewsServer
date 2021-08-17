@@ -1,9 +1,15 @@
 import { prop, Ref, getModelForClass } from '@typegoose/typegoose'
 import BaseModel from './base_model'
+import { Category } from './category'
 import { User } from './user'
 
 
 export class Post extends BaseModel {
+
+  // 分类
+  @prop({ ref: 'Category' })
+  public categories?: Ref<Category>[]
+
   // 原始链接
   @prop()
   public original_link?: string
@@ -23,10 +29,6 @@ export class Post extends BaseModel {
   // 发布日期
   @prop({ required: true, })
   public published_date: Date
-
-  // 点赞的用户 默认 type 为 ObjectId
-  @prop({ ref: 'User', default: [] })
-  public favourites?: Ref<User>[]
 
   // 是否置顶
   @prop({ default: false })

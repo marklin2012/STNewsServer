@@ -1,6 +1,5 @@
-import { prop, Ref, getModelForClass } from '@typegoose/typegoose'
+import { prop, getModelForClass } from '@typegoose/typegoose'
 import BaseModel from './base_model'
-import { Post } from './post'
 
 export class User extends BaseModel {
 
@@ -25,14 +24,6 @@ export class User extends BaseModel {
     // 用户邮箱
     @prop({ select: false })
     public email?: string
-
-    // 粉丝  默认 type 为 ObjectId
-    @prop({ ref: 'User', default: [] })
-    public followers?: Ref<User>[]
-
-    // // // 收藏的文章
-    @prop({ ref: 'Post', default: [] })
-    public favourites?: Ref<Post>[]
 
     // 头像
     @prop()

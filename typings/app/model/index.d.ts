@@ -3,17 +3,27 @@
 
 import 'egg';
 import ExportBaseModel from '../../../app/model/base_model';
+import ExportCategory from '../../../app/model/category';
 import ExportComment from '../../../app/model/comment';
+import ExportCommentFavourite from '../../../app/model/comment_favourite';
 import ExportConfig from '../../../app/model/config';
 import ExportPost from '../../../app/model/post';
+import ExportPostFavourite from '../../../app/model/post_favourite';
 import ExportUser from '../../../app/model/user';
+import ExportUserFans from '../../../app/model/user_fans';
+import ExportUserFavourite from '../../../app/model/user_favourite';
 
 declare module 'egg' {
   interface IModel {
     BaseModel: ReturnType<typeof ExportBaseModel>;
+    Category: ReturnType<typeof ExportCategory>;
     Comment: ReturnType<typeof ExportComment>;
+    CommentFavourite: ReturnType<typeof ExportCommentFavourite>;
     Config: ReturnType<typeof ExportConfig>;
     Post: ReturnType<typeof ExportPost>;
+    PostFavourite: ReturnType<typeof ExportPostFavourite>;
     User: ReturnType<typeof ExportUser>;
+    UserFans: ReturnType<typeof ExportUserFans>;
+    UserFavourite: ReturnType<typeof ExportUserFavourite>;
   }
 }

@@ -11,15 +11,16 @@ export default class TestController extends Controller {
   * @summary 用户测试
   * @description 
   * @router get /test/add_user
-  * @reuest path string *id
+  * @reuest query string path *id
+ 
   */
   public async addUserTest() {
     const { ctx } = this;
-
+    var mo = 12345678900 + Math.floor(Math.random() * 1000000)
     // 模拟前端传递过来的数据
     const user = new User()
     user.password = '123456'
-    user.mobile = '12345678911'
+    user.mobile = mo.toString()
     user.nickname = 'nickname'
     const res = await User.create(user)
     ctx.body = {
