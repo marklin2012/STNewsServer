@@ -9,7 +9,7 @@ export default (appInfo: EggAppInfo) => {
   config.keys = appInfo.name + '_1628616862378_8189';
 
   // add your egg config in here
-  config.middleware = [];
+  config.middleware = ['paging'];
 
   config.swaggerdoc = {
     dirScanner: './app/controller',
