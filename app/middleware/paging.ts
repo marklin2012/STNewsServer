@@ -8,7 +8,11 @@ const DEFAULT_PAGE_NUM = 1
 function paging(ctx: Context, next) {
   if (ctx.method == 'GET') {
     const { query } = ctx
-    const limit = min([Math.abs(parseInt(query.per_page)) || DEFAULT_PER_PAGE, MAX_PER_PAGE]) || DEFAULT_PER_PAGE
+    const limit =
+      min([
+        Math.abs(parseInt(query.per_page)) || DEFAULT_PER_PAGE,
+        MAX_PER_PAGE,
+      ]) || DEFAULT_PER_PAGE
     const page = Math.abs(parseInt(query.page)) || DEFAULT_PAGE_NUM
     ctx.state.per_page = limit
     ctx.state.page = page

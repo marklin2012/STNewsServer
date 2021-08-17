@@ -1,7 +1,7 @@
-import { EggAppConfig, PowerPartial } from 'egg';
+import { EggAppConfig, PowerPartial } from 'egg'
 
 export default () => {
-  const config: PowerPartial<EggAppConfig> = {};
+  const config: PowerPartial<EggAppConfig> = {}
   config.swaggerdoc = {
     dirScanner: './app/controller',
     apiInfo: {
@@ -22,7 +22,7 @@ export default () => {
     client: {
       url: 'mongodb://127.0.0.1:27017/egg-mongo',
       options: {},
-    }
+    },
   }
-  return config;
-};
+  return config
+}

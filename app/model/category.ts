@@ -1,7 +1,6 @@
 import { prop, getModelForClass } from '@typegoose/typegoose'
 import BaseModel from './base_model'
 
-
 // 分类表
 export class Category extends BaseModel {
   // 类型名
@@ -12,11 +11,9 @@ export class Category extends BaseModel {
   @prop({
     select: false,
     index: true,
-    default: false
+    default: false,
   })
   public deleted?: boolean
-
 }
 
 export default getModelForClass(Category)
-

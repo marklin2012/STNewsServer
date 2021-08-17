@@ -3,7 +3,6 @@ import BaseModel from './base_model'
 import { User } from './user'
 import { Comment } from './comment'
 
-
 // 分类表
 export class CommentFavourite extends BaseModel {
   // 点点赞的用户
@@ -18,11 +17,9 @@ export class CommentFavourite extends BaseModel {
   @prop({
     select: false,
     index: true,
-    default: true
+    default: true,
   })
   public status?: boolean
-
 }
 
 export default getModelForClass(CommentFavourite)
-

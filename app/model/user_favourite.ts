@@ -2,7 +2,6 @@ import { prop, Ref, getModelForClass } from '@typegoose/typegoose'
 import BaseModel from './base_model'
 import { User } from './user'
 
-
 // 分类表
 export class UserFavourite extends BaseModel {
   // 点关注的用户
@@ -17,11 +16,9 @@ export class UserFavourite extends BaseModel {
   @prop({
     select: false,
     index: true,
-    default: true
+    default: true,
   })
   public status?: boolean
-
 }
 
 export default getModelForClass(UserFavourite)
-

@@ -3,7 +3,6 @@ import BaseModel from './base_model'
 import { Post } from './post'
 import { User } from './user'
 
-
 export class Comment extends BaseModel {
   // 原始链接
   @prop()
@@ -33,11 +32,9 @@ export class Comment extends BaseModel {
   @prop({
     select: false,
     index: true,
-    default: false
+    default: false,
   })
   public deleted?: boolean
-
 }
 
 export default getModelForClass(Comment)
-

@@ -3,9 +3,7 @@ import BaseModel from './base_model'
 import { Category } from './category'
 import { User } from './user'
 
-
 export class Post extends BaseModel {
-
   // 分类
   @prop({ ref: 'Category' })
   public categories?: Ref<Category>[]
@@ -27,7 +25,7 @@ export class Post extends BaseModel {
   public author: Ref<User>
 
   // 发布日期
-  @prop({ required: true, })
+  @prop({ required: true })
   public published_date: Date
 
   // 是否置顶
@@ -46,11 +44,9 @@ export class Post extends BaseModel {
   @prop({
     select: false,
     index: true,
-    default: false
+    default: false,
   })
   public deleted?: boolean
-
 }
 
 export default getModelForClass(Post)
-

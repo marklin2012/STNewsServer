@@ -5,7 +5,6 @@ import { Controller } from 'egg'
  */
 
 export default class PostController extends Controller {
-
   public async list() {
     const { ctx } = this
 
@@ -13,12 +12,8 @@ export default class PostController extends Controller {
       code: 0,
       message: '',
       data: {
-        result: 'post'
-      }
+        result: 'post',
+      },
     }
   }
-
 }
-
-
-

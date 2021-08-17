@@ -1,12 +1,11 @@
-import { Controller } from 'egg';
-import User from '../model/user';
+import { Controller } from 'egg'
+import User from '../model/user'
 
 /**
  * @controller TestController
  */
 
 export default class TestController extends Controller {
-
   /**
   * @summary 用户测试
   * @description 
@@ -27,11 +26,8 @@ export default class TestController extends Controller {
       code: 0,
       message: '',
       data: {
-        result: res
-      }
+        result: res,
+      },
     }
   }
 }
-
-
-

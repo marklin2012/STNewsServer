@@ -1,13 +1,7 @@
-import { Controller } from 'egg';
+import { Controller } from 'egg'
 
 /**
  * @controller UserController
  */
 
-export default class UserController extends Controller {
-
-
-}
-
-
-
+export default class UserController extends Controller {}

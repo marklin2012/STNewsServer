@@ -1,6 +1,7 @@
 {
   "extends": "eslint-config-egg/typescript",
-  "parserOptions": {
-    "project": "./tsconfig.json"
+  "plugins": ["prettier"],  // 在eslint时启动prettier检查
+  "rules": {
+    "prettier/prettier": "error"  // prettier的lint的冲突会被ESLint当做错误处理
   }
 }
