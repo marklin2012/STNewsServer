@@ -107,8 +107,25 @@ export default class UserController extends Controller {
     };
   }
 
-  public modify() {
-
+  public async modify() {
+    let { ctx } = this;
+    let { sex, nickname } = ctx.request.body;
+    let { mobile } = ctx.state.user;
+    var modify = {};
+    if (sex) {
+      modify["sex"] = sex;
+    }
+    if (nickname) {
+      modify["nickname"] = nickname;
+    }
+    let userInfo = await User.findOneAndUpdate({ mobile: mobile }, { $set: modify });
+    if (!userInfo) {
+      ctx.body = { code: 400, message: '手机号不存在' };
+      return;
+    }
+    ctx.body = {
+      code: 200, message: '修改用户信息成功'
+    };
   }
 
   public async delete() {
@@ -122,6 +139,21 @@ export default class UserController extends Controller {
     ctx.body = {
       code: 200, message: '用户删除成功'
     };
+  }
+
+  public async getUserInfo() {
+    let { ctx } = this;
+    let { mobile } = ctx.state.user;
+    let userInfo = await User.findOneAndUpdate({ mobile: mobile }, { $set: { deleted: true } });
+    if (!userInfo) {
+      ctx.body = { code: 400, message: '手机号不存在' };
+      return;
+    }
+    ctx.body = {
+      code: 200, message: '获取用户信息成功', data: {
+        userInfo: userInfo
+      }
+    }
   }
 }
 

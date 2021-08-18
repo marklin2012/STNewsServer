@@ -10,4 +10,6 @@ export default (app: Application) => {
   router.post('/user/loginWithPin', controller.user.loginWithPin)
   router.post('/user/changePassword', jwt, controller.user.changePassword)
   router.post('/user/delete', jwt, controller.user.delete)
+  router.get('/user/info', jwt, controller.user.getUserInfo)
+  router.post('/user/modify', jwt, controller.user.modify)
 }
