@@ -8,7 +8,7 @@ export default (appInfo: EggAppInfo) => {
   config.keys = appInfo.name + '_1628616862378_8189'
 
   // add your egg config in here
-  config.middleware = ['paging']
+  //   config.middleware = ['paging']
 
   config.swaggerdoc = {
     dirScanner: './app/controller',
@@ -36,6 +36,10 @@ export default (appInfo: EggAppInfo) => {
   // add your special config in here
   const bizConfig = {
     sourceUrl: `https://github.com/eggjs/examples/tree/master/${appInfo.name}`,
+  }
+
+  config.jwt = {
+    secret: "rqeijqp*()"
   }
 
   // the return config will combines to EggAppConfig
