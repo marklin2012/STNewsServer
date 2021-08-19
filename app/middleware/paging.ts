@@ -23,4 +23,4 @@ function paging(ctx: Context, next) {
   return next()
 }
 
-export default paging
+export default () => paging
