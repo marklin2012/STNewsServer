@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@typegoose/typegoose": "^8.1.1",
+    "boom": "^7.3.0",
     "egg": "^2.6.1",
     "egg-mongoose": "^3.3.1",
     "egg-scripts": "^2.6.0",
