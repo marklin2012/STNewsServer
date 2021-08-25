@@ -13,7 +13,7 @@ export class User extends BaseModel {
   public mobile: string
 
   // 密码
-  @prop({ select: false, minlength: 6, maxlength: 20, required: true })
+  @prop({ select: false })
   public password: string
 
   // 用户昵称
