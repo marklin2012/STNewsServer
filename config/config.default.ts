@@ -8,7 +8,7 @@ export default (appInfo: EggAppInfo) => {
   config.keys = appInfo.name + '_1628616862378_8189'
 
   // add your egg config in here
-  //   config.middleware = ['paging']
+  config.middleware = ['auth', 'paging', 'error']
 
   config.swaggerdoc = {
     dirScanner: './app/controller',
@@ -17,8 +17,8 @@ export default (appInfo: EggAppInfo) => {
       description: 'api for STNews',
       version: '1.0.0',
       schemes: ['http', 'https'],
-      consumes: ['application/json'],
-      produces: ['application/json'],
+      consumes: ['application/x-www-form-urlencoded', 'application/json'],
+      produces: ['application/json', 'application/x-www-form-urlencoded'],
       enableSecurity: false,
       // enableValidate: true,
       routerMap: true,
@@ -39,8 +39,10 @@ export default (appInfo: EggAppInfo) => {
   }
 
   config.jwt = {
-    secret: "rqeijqp*()"
+    secret: 'rqeijqp*()',
   }
+
+  config.validate = {}
 
   // the return config will combines to EggAppConfig
   return {
