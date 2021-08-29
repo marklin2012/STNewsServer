@@ -1,160 +1,247 @@
-import { Controller } from 'egg'
-
 import User from '../model/user'
+import BaseController from './base_controller'
+import * as Boom from '@hapi/boom'
+import { trim } from 'lodash'
 
 /**
  * @controller UserController
  */
 
-export default class UserController extends Controller {
-
+export default class UserController extends BaseController {
+  /**
+   * @summary 通过手机号密码登录
+   * @description
+   * @router post /login/password
+   * @request formData string *mobile 手机号
+   * @request formData string *password 密码
+   * @response 200 responseBody 返回值
+   */
   public async loginWithPassword() {
-    let { ctx } = this;
-    let { mobile, password } = ctx.request.body;
+    let { ctx } = this
 
-    //这里添加参数校验
-    if (!mobile || !password || mobile.length == 0 || password.length == 0) {
-      ctx.body = { code: 400, message: '参数错误' };
-      return;
+    ctx.validate({
+      mobile: { type: 'string', required: true },
+      password: { type: 'string', required: true },
+    })
+    let { mobile, password } = ctx.request.body
+
+    let userInfo = await User.findOne(
+      { mobile: mobile, deleted: false, password },
+      { mobile: 1, password: 1 }
+    )
+    if (!userInfo) {
+      throw Boom.unauthorized('手机号对应用户不存在，或密码不正确')
     }
 
-    let userInfo = await User.findOne({ mobile: mobile }, { mobile: 1, password: 1 });
-    if (!userInfo || (userInfo && userInfo.deleted == true)) {
-      ctx.body = { code: 400, message: '手机号不存在' };
-      return;
+    if (userInfo.password == '') {
+      throw Boom.badData('用户密码不存在，请用验证码登录并设置密码')
     }
 
-    if (userInfo.password == "") {
-      ctx.body = { code: 400, message: '请用验证码登录并设置密码' };
-      return;
-    }
+    let token = await this.app.jwt.sign(
+      { mobile: userInfo.mobile, password: userInfo.password },
+      this.app.config.jwt.secret
+    )
 
-    if (userInfo.password != password) {
-      ctx.body = { code: 400, message: '密码不正确' };
-      return;
-    }
-
-    let userInfoArr = JSON.parse(JSON.stringify({
-      mobile: mobile,
-      password: password,
-    }));
-    let token = await this.app.jwt.sign(userInfoArr, this.app.config.jwt.secret);
-
-    ctx.body = {
-      code: 200, message: '登录成功', data: {
-        token: token
-      }
-    };
+    this.success({ token }, '登录成功')
   }
 
+  /**
+   * @summary 验证码登录接口
+   * @description
+   * @router post /login/pin
+   * @request formData string *mobile 手机号
+   * @request formData string pin 验证码
+   * @response 200 responseBody 返回值
+   */
   public async loginWithPin() {
-    let { ctx } = this;
-    let { mobile, pin } = ctx.request.body;
+    const { ctx } = this
 
-    //这里添加参数校验
-    if (!mobile || !pin || mobile.length == 0 || pin.length == 0) {
-      ctx.body = { code: 400, message: '参数错误' };
-      return;
-    }
+    ctx.validate({
+      mobile: { type: 'string', required: true },
+      pin: { type: 'string', required: false, default: '000000' },
+    })
+
+    const { mobile, pin } = ctx.request.body
 
     //暂时使用
     if (pin != '000000') {
-      ctx.body = { code: 400, message: '验证码不正确' };
-      return;
+      throw Boom.badData('验证码不正确')
     }
 
-    let userInfo = await User.findOne({ mobile: mobile }, { mobile: 1, deleted: 1 });
-    if (!userInfo || (userInfo && userInfo.deleted == true)) {
-      if (userInfo && userInfo.deleted == true) {
-        await User.findOneAndDelete({ mobile: mobile });
-      }
-      userInfo = await User.create({ mobile: mobile, password: "", deleted: false });
+    let userInfo = await User.findOne(
+      { mobile: mobile, deleted: false },
+      { mobile: 1, password: 1 }
+    )
+    if (!userInfo) {
+      userInfo = await User.create({
+        mobile: mobile,
+        password: '',
+      })
     }
 
-    let userInfoArr = JSON.parse(JSON.stringify({
-      mobile: mobile,
-      password: ""
-    }));
-    let token = await this.app.jwt.sign(userInfoArr, this.app.config.jwt.secret);
+    let token = await this.app.jwt.sign(
+      { mobile: userInfo.mobile, password: userInfo.password },
+      this.app.config.jwt.secret
+    )
 
-    ctx.body = {
-      code: 200, message: '登录成功', data: {
-        token: token,
-      }
-    };
+    this.success({ token: token }, '登录成功')
   }
 
-  public async changePassword() {
-    let { ctx } = this;
-    let { password } = ctx.request.body;
-    let { mobile } = ctx.state.user;
-    let userInfo = await User.findOneAndUpdate({ mobile: mobile }, { $set: { password: password } });
+  /**
+   * @summary 设置密码
+   * @description
+   * @router post /user/password
+   * @request formData string *password 密码
+   * @request formData string *re_password 验证密码
+   * @response 200 responseBody 返回值
+   */
+  public async setPassword() {
+    const { ctx } = this
+
+    ctx.validate({
+      password: { type: 'string', required: true },
+      re_password: { type: 'string', required: true },
+    })
+
+    const { password, re_password: rePassword } = ctx.request.body
+    const { mobile } = ctx.state.user
+    if (trim(password) == trim(rePassword)) {
+      throw Boom.badData('两次输入密码不一致')
+    }
+    let userInfo = await User.findOneAndUpdate(
+      { mobile: mobile },
+      { $set: { password: trim(password) } }
+    )
     if (!userInfo) {
-      ctx.body = { code: 400, message: '手机号不存在' };
-      return;
+      throw Boom.badData('用户不存在')
+    }
+    let token = await this.app.jwt.sign(
+      { mobile: userInfo.mobile, password: userInfo.password },
+      this.app.config.jwt.secret
+    )
+    this.success({ token }, '修改密码成功')
+  }
+
+  /**
+   * @summary 获取验证码
+   * @description
+   * @router get /checkcode
+   * @request formData string *mobile 手机号
+   * @response 200 responseBody 返回值
+   */
+  public async getCheckCode() {
+    const { ctx } = this
+    ctx.validate({
+      mobile: { type: 'string', required: true },
+    })
+    const { mobile } = ctx.request.query
+
+    this.success({ mobile, code: '000000' }, '成功发送验证码')
+  }
+
+  /**
+   * @summary 修改密码
+   * @description
+   * @router post /user/password/modify
+   * @request formData string *old_password 旧密码
+   * @request formData string *password 密码
+   * @request formData string *re_password 验证密码
+   * @response 200 responseBody 返回值
+   */
+  public async changePassword() {
+    let { ctx } = this
+    ctx.validate({
+      old_password: { type: 'string', required: true },
+      password: { type: 'string', required: true },
+      re_password: { type: 'string', required: true },
+    })
+
+    let {
+      old_password: oldPassowrd,
+      password,
+      re_password: rePassword,
+    } = ctx.request.body
+    let { mobile } = ctx.state.user
+
+    if (trim(rePassword) != trim(password)) {
+      throw Boom.badData('两次输入密码不一致')
     }
 
-    let userInfoArr = JSON.parse(JSON.stringify({
-      mobile: mobile,
-      password: password,
-    }));
-    let token = await this.app.jwt.sign(userInfoArr, this.app.config.jwt.secret);
+    let userInfo = await User.findOneAndUpdate(
+      { mobile: mobile, password: oldPassowrd, deleted: false },
+      { $set: { password: trim(password) } }
+    )
+    if (!userInfo) {
+      throw Boom.badData('用户不存在或旧密码错误')
+    }
 
-    ctx.body = {
-      code: 200, message: '修改密码成功', data: {
-        token: token
-      }
-    };
+    let token = await this.app.jwt.sign(
+      { mobile: userInfo.mobile, password: userInfo.password },
+      this.app.config.jwt.secret
+    )
+
+    this.success({ token }, '修改密码成功')
   }
 
   public async modify() {
-    let { ctx } = this;
-    let { sex, nickname } = ctx.request.body;
-    let { mobile } = ctx.state.user;
-    var modify = {};
+    let { ctx } = this
+    let { sex, nickname } = ctx.request.body
+    let { mobile } = ctx.state.user
+    var modify = {}
     if (sex) {
-      modify["sex"] = sex;
+      modify['sex'] = sex
     }
     if (nickname) {
-      modify["nickname"] = nickname;
+      modify['nickname'] = nickname
     }
-    let userInfo = await User.findOneAndUpdate({ mobile: mobile }, { $set: modify });
+    let userInfo = await User.findOneAndUpdate(
+      { mobile: mobile },
+      { $set: modify }
+    )
     if (!userInfo) {
-      ctx.body = { code: 400, message: '手机号不存在' };
-      return;
+      ctx.body = { code: 400, message: '手机号不存在' }
+      return
     }
     ctx.body = {
-      code: 200, message: '修改用户信息成功'
-    };
+      code: 200,
+      message: '修改用户信息成功',
+    }
   }
 
   public async delete() {
-    let { ctx } = this;
-    let { mobile } = ctx.state.user;
-    let userInfo = await User.findOneAndUpdate({ mobile: mobile }, { $set: { deleted: true } });
+    let { ctx } = this
+    let { mobile } = ctx.state.user
+    let userInfo = await User.findOneAndUpdate(
+      { mobile: mobile },
+      { $set: { deleted: true } }
+    )
     if (!userInfo) {
-      ctx.body = { code: 400, message: '手机号不存在' };
-      return;
+      ctx.body = { code: 400, message: '手机号不存在' }
+      return
     }
     ctx.body = {
-      code: 200, message: '用户删除成功'
-    };
+      code: 200,
+      message: '用户删除成功',
+    }
   }
 
   public async getUserInfo() {
-    let { ctx } = this;
-    let { mobile } = ctx.state.user;
-    let userInfo = await User.findOneAndUpdate({ mobile: mobile }, { $set: { deleted: true } });
+    let { ctx } = this
+    let { mobile } = ctx.state.user
+    let userInfo = await User.findOneAndUpdate(
+      { mobile: mobile },
+      { $set: { deleted: true } }
+    )
     if (!userInfo) {
-      ctx.body = { code: 400, message: '手机号不存在' };
-      return;
+      ctx.body = { code: 400, message: '手机号不存在' }
+      return
     }
     ctx.body = {
-      code: 200, message: '获取用户信息成功', data: {
-        userInfo: userInfo
-      }
+      code: 200,
+      message: '获取用户信息成功',
+      data: {
+        userInfo: userInfo,
+      },
     }
   }
 }
-
-
