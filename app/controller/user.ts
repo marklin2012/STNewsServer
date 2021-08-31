@@ -40,11 +40,11 @@ export default class UserController extends BaseController {
     }
 
     let token = await this.app.jwt.sign(
-      { mobile: userInfo.mobile, password: userInfo.password },
+      { mobile: userInfo.mobile },
       this.app.config.jwt.secret
     )
-
-    this.success({ token, user: userInfo }, '登录成功')
+    const user = await userInfo.toJSON()
+    this.success({ token, user: user }, '登录成功')
   }
 
   /**
@@ -72,12 +72,12 @@ export default class UserController extends BaseController {
 
     const userInfo = await User.findOneAndUpdate(
       {
-        mobile: mobile,
+        mobile: trim(mobile),
         deleted: false,
       },
       {
         $setOnInsert: {
-          mobile: mobile,
+          mobile: trim(mobile),
           password: '',
           nickname: defaultNickNameWithMobile(mobile),
           deleted: false,
@@ -85,18 +85,18 @@ export default class UserController extends BaseController {
         },
       },
       { new: true, upsert: true }
-    ).lean()
+    )
 
     if (!userInfo) {
       throw Boom.badData('未找到对应用户')
     }
 
     let token = await this.app.jwt.sign(
-      { mobile: userInfo.mobile, password: userInfo.password },
+      { mobile: userInfo.mobile },
       this.app.config.jwt.secret
     )
-
-    this.success({ token: token, user: userInfo }, '登录成功')
+    const user = await userInfo.toJSON()
+    this.success({ token: token, user }, '登录成功')
   }
 
   /**
@@ -120,15 +120,15 @@ export default class UserController extends BaseController {
     if (trim(password) == trim(rePassword)) {
       throw Boom.badData('两次输入密码不一致')
     }
-    let userInfo = await User.findOneAndUpdate(
+    const userInfo = await User.findOneAndUpdate(
       { mobile: mobile },
       { $set: { password: trim(password) } }
     )
     if (!userInfo) {
       throw Boom.badData('用户不存在')
     }
-    let token = await this.app.jwt.sign(
-      { mobile: userInfo.mobile, password: userInfo.password },
+    const token = await this.app.jwt.sign(
+      { mobile: userInfo.mobile },
       this.app.config.jwt.secret
     )
     this.success({ token }, '修改密码成功')
@@ -233,6 +233,7 @@ export default class UserController extends BaseController {
   public async getUserInfo() {
     let { ctx } = this
     let { mobile } = ctx.state.user
+    console.log('mobile:', mobile)
     let userInfo = await User.findOne({ mobile: mobile }).lean()
     if (!userInfo) {
       throw Boom.badData('用户不存在')
