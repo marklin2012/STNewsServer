@@ -11,6 +11,6 @@ export default (app: Application) => {
   router.get('/checkcode', controller.user.getCheckCode)
   router.post('/user/password', controller.user.setPassword)
   // 用户权限相关
-  router.put('/user/modify', controller.user.update)
+  router.put('/user/update', controller.user.update)
   router.get('/user/info', controller.user.getUserInfo)
 }
