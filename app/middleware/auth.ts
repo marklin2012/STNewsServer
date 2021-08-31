@@ -17,7 +17,7 @@ export default (app) => {
         : ''
       try {
         const decode = await app.jwt.verify(token, app.config.jwt.secret)
-        ctx.state.userinfo = decode
+        ctx.state.user = decode
         console.log('校验成功')
         await next()
       } catch (err) {
