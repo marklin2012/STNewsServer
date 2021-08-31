@@ -10,6 +10,6 @@ export default [
   // 路由相关白名单
   '/login/password',
   '/login/pin',
-  '/login/checkcode',
+  '/checkcode',
   '/user/password',
 ]
