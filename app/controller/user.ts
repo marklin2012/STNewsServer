@@ -2,6 +2,7 @@ import User from '../model/user'
 import BaseController from './base_controller'
 import * as Boom from '@hapi/boom'
 import { trim } from 'lodash'
+import { defaultNickNameWithMobile } from '../utils/nickname'
 
 /**
  * @controller UserController
@@ -25,10 +26,11 @@ export default class UserController extends BaseController {
     })
     let { mobile, password } = ctx.request.body
 
-    let userInfo = await User.findOne(
-      { mobile: mobile, deleted: false, password },
-      { mobile: 1, password: 1 }
-    )
+    let userInfo = await User.findOne({
+      mobile: mobile,
+      deleted: false,
+      password,
+    })
     if (!userInfo) {
       throw Boom.unauthorized('手机号对应用户不存在，或密码不正确')
     }
@@ -42,7 +44,7 @@ export default class UserController extends BaseController {
       this.app.config.jwt.secret
     )
 
-    this.success({ token }, '登录成功')
+    this.success({ token, user: userInfo }, '登录成功')
   }
 
   /**
@@ -68,15 +70,25 @@ export default class UserController extends BaseController {
       throw Boom.badData('验证码不正确')
     }
 
-    let userInfo = await User.findOne(
-      { mobile: mobile, deleted: false },
-      { mobile: 1, password: 1 }
-    )
-    if (!userInfo) {
-      userInfo = await User.create({
+    const userInfo = await User.findOneAndUpdate(
+      {
         mobile: mobile,
-        password: '',
-      })
+        deleted: false,
+      },
+      {
+        $setOnInsert: {
+          mobile: mobile,
+          password: '',
+          nickname: defaultNickNameWithMobile(mobile),
+          deleted: false,
+          sex: 0,
+        },
+      },
+      { new: true, upsert: true }
+    ).lean()
+
+    if (!userInfo) {
+      throw Boom.badData('未找到对应用户')
     }
 
     let token = await this.app.jwt.sign(
@@ -84,7 +96,7 @@ export default class UserController extends BaseController {
       this.app.config.jwt.secret
     )
 
-    this.success({ token: token }, '登录成功')
+    this.success({ token: token, user: userInfo }, '登录成功')
   }
 
   /**
