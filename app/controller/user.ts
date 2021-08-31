@@ -27,7 +27,7 @@ export default class UserController extends BaseController {
     let { mobile, password } = ctx.request.body
 
     let userInfo = await User.findOne({
-      mobile: mobile,
+      mobile: trim(mobile),
       deleted: false,
       password,
     })
@@ -152,7 +152,7 @@ export default class UserController extends BaseController {
   }
 
   /**
-   * @summary 修改密码
+   * @summary 修改密码 （暂时停用）
    * @description
    * @router post /user/password/modify
    * @request formData string *old_password 旧密码
@@ -161,19 +161,19 @@ export default class UserController extends BaseController {
    * @response 200 responseBody 返回值
    */
   public async changePassword() {
-    let { ctx } = this
+    const { ctx } = this
     ctx.validate({
       old_password: { type: 'string', required: true },
       password: { type: 'string', required: true },
       re_password: { type: 'string', required: true },
     })
 
-    let {
+    const {
       old_password: oldPassowrd,
       password,
       re_password: rePassword,
     } = ctx.request.body
-    let { mobile } = ctx.state.user
+    const { mobile } = ctx.state.user
 
     if (trim(rePassword) != trim(password)) {
       throw Boom.badData('两次输入密码不一致')
@@ -195,65 +195,48 @@ export default class UserController extends BaseController {
     this.success({ token }, '修改密码成功')
   }
 
-  public async modify() {
+  /**
+   * @summary 修改用户资料
+   * @description
+   * @router put /user/update
+   * @request formData string sex 性别
+   * @request formData string nickname 昵称
+   * @request formData string head_image 头像地址
+   * @response 200 responseBody 返回值
+   */
+  public async update() {
     let { ctx } = this
-    let { sex, nickname } = ctx.request.body
+    ctx.validate({
+      sex: { type: 'number' },
+      nickname: { type: 'string', min: 3, max: 20 },
+      head_image: { type: 'string' },
+    })
+    // let { sex, nickname, head_image } = ctx.request.body
     let { mobile } = ctx.state.user
-    var modify = {}
-    if (sex) {
-      modify['sex'] = sex
-    }
-    if (nickname) {
-      modify['nickname'] = nickname
-    }
+
     let userInfo = await User.findOneAndUpdate(
       { mobile: mobile },
-      { $set: modify }
-    )
+      { $set: ctx.request.body }
+    ).lean()
     if (!userInfo) {
-      ctx.body = { code: 400, message: '手机号不存在' }
-      return
+      throw Boom.badData('用户不存在')
     }
-    ctx.body = {
-      code: 200,
-      message: '修改用户信息成功',
-    }
+    this.success({ user: userInfo }, '修改用户信息成功')
   }
 
-  public async delete() {
-    let { ctx } = this
-    let { mobile } = ctx.state.user
-    let userInfo = await User.findOneAndUpdate(
-      { mobile: mobile },
-      { $set: { deleted: true } }
-    )
-    if (!userInfo) {
-      ctx.body = { code: 400, message: '手机号不存在' }
-      return
-    }
-    ctx.body = {
-      code: 200,
-      message: '用户删除成功',
-    }
-  }
-
+  /**
+   * @summary 修改用户资料
+   * @description
+   * @router get /user/info
+   * @response 200 responseBody 返回值
+   */
   public async getUserInfo() {
     let { ctx } = this
     let { mobile } = ctx.state.user
-    let userInfo = await User.findOneAndUpdate(
-      { mobile: mobile },
-      { $set: { deleted: true } }
-    )
+    let userInfo = await User.findOne({ mobile: mobile }).lean()
     if (!userInfo) {
-      ctx.body = { code: 400, message: '手机号不存在' }
-      return
+      throw Boom.badData('用户不存在')
     }
-    ctx.body = {
-      code: 200,
-      message: '获取用户信息成功',
-      data: {
-        userInfo: userInfo,
-      },
-    }
+    this.success({ user: userInfo }, '获取用户信息成功')
   }
 }
