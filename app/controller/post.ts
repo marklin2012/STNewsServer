@@ -15,7 +15,6 @@ export default class PostController extends BaseController {
   public async list() {
     const { ctx } = this
     const { per_page, skip } = ctx.state
-    console.log('test:', per_page, skip)
     const result = await Post.find().limit(per_page).skip(skip).lean()
     this.success(result)
   }
