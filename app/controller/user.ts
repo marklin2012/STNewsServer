@@ -311,4 +311,30 @@ export default class UserController extends BaseController {
       throw Boom.badData('用户可能不存在，请稍后再试')
     }
   }
+
+  /**
+   * @summary 获取自己关注的用户
+   * @description
+   * @router get /user/favourite
+   * @response 200 responseBody 返回值
+   */
+  public async geFavouriteUsers() {
+    const { ctx } = this
+    const { id } = ctx.state.user
+    const res = UserFavourite.find(
+      {
+        user: id,
+        status: true,
+      },
+      { followed_user: 1 }
+    )
+      .populate(User)
+      .lean()
+    this.success(
+      {
+        favourites: res,
+      },
+      '成功获取关注列表'
+    )
+  }
 }

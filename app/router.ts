@@ -14,4 +14,5 @@ export default (app: Application) => {
   router.put('/user/update', controller.user.update)
   router.get('/user/info', controller.user.getUserInfo)
   router.put('/user/favourite', controller.user.favouriteUser)
+  router.get('/user/favourite/list', controller.user.geFavouriteUsers)
 }
