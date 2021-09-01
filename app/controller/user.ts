@@ -1,7 +1,7 @@
 import User from '../model/user'
 import BaseController from './base_controller'
 import * as Boom from '@hapi/boom'
-import { trim } from 'lodash'
+import { map, trim } from 'lodash'
 import { defaultNickNameWithMobile } from '../utils/nickname'
 import { signUser } from '../utils/sign_jwt'
 import UserFavourite from '../model/user_favourite'
@@ -263,7 +263,6 @@ export default class UserController extends BaseController {
   public async favouriteUser() {
     const { ctx } = this
     const { id } = ctx.state.user
-    console.log('fav:', ctx.request)
     ctx.validate({
       followed_user: { type: 'string', required: true },
       status: { type: 'bool', default: true, required: false },
@@ -320,19 +319,23 @@ export default class UserController extends BaseController {
    */
   public async geFavouriteUsers() {
     const { ctx } = this
+    const { per_page, skip } = ctx.state
     const { id } = ctx.state.user
-    const res = UserFavourite.find(
+    const res = await UserFavourite.find(
       {
         user: id,
         status: true,
       },
       { followed_user: 1 }
     )
-      .populate(User)
+      .limit(per_page)
+      .skip(skip)
+      .populate('followed_user')
       .lean()
+    const users = map(res, (item) => item.followed_user)
     this.success(
       {
-        favourites: res,
+        favourites: users,
       },
       '成功获取关注列表'
     )
