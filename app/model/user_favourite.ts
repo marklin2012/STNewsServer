@@ -5,11 +5,11 @@ import { User } from './user'
 // 分类表
 export class UserFavourite extends BaseModel {
   // 点关注的用户
-  @prop({ required: true, ref: 'User' })
+  @prop({ index: true, required: true, ref: 'User' })
   public user: Ref<User>
 
   // 被关注的用户
-  @prop({ required: true, ref: 'User' })
+  @prop({ index: true, required: true, ref: 'User' })
   public followed_user: Ref<User>
 
   // 是否关注的状态

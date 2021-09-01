@@ -10,7 +10,8 @@ export default (app: Application) => {
   router.post('/login/pin', controller.user.loginWithPin)
   router.get('/checkcode', controller.user.getCheckCode)
   router.post('/user/password', controller.user.setPassword)
-  // 用户权限相关
+  // 用户相关
   router.put('/user/update', controller.user.update)
   router.get('/user/info', controller.user.getUserInfo)
+  router.put('/user/favourite', controller.user.favouriteUser)
 }

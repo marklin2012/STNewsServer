@@ -3,6 +3,9 @@ import BaseController from './base_controller'
 import * as Boom from '@hapi/boom'
 import { trim } from 'lodash'
 import { defaultNickNameWithMobile } from '../utils/nickname'
+import { signUser } from '../utils/sign_jwt'
+import UserFavourite from '../model/user_favourite'
+import UserFans from '../model/user_fans'
 
 /**
  * @controller UserController
@@ -18,15 +21,15 @@ export default class UserController extends BaseController {
    * @response 200 responseBody 返回值
    */
   public async loginWithPassword() {
-    let { ctx } = this
+    const { ctx } = this
 
     ctx.validate({
       mobile: { type: 'string', required: true },
       password: { type: 'string', required: true },
     })
-    let { mobile, password } = ctx.request.body
+    const { mobile, password } = ctx.request.body
 
-    let userInfo = await User.findOne({
+    const userInfo = await User.findOne({
       mobile: trim(mobile),
       deleted: false,
       password,
@@ -39,8 +42,9 @@ export default class UserController extends BaseController {
       throw Boom.badData('用户密码不存在，请用验证码登录并设置密码')
     }
 
-    let token = await this.app.jwt.sign(
-      { mobile: userInfo.mobile },
+    const token = await signUser(
+      this.app.jwt,
+      userInfo,
       this.app.config.jwt.secret
     )
     const user = await userInfo.toJSON()
@@ -91,8 +95,9 @@ export default class UserController extends BaseController {
       throw Boom.badData('未找到对应用户')
     }
 
-    let token = await this.app.jwt.sign(
-      { mobile: userInfo.mobile },
+    const token = await signUser(
+      this.app.jwt,
+      userInfo,
       this.app.config.jwt.secret
     )
     const user = await userInfo.toJSON()
@@ -127,8 +132,9 @@ export default class UserController extends BaseController {
     if (!userInfo) {
       throw Boom.badData('用户不存在')
     }
-    const token = await this.app.jwt.sign(
-      { mobile: userInfo.mobile },
+    const token = await signUser(
+      this.app.jwt,
+      userInfo,
       this.app.config.jwt.secret
     )
     this.success({ token }, '修改密码成功')
@@ -179,7 +185,7 @@ export default class UserController extends BaseController {
       throw Boom.badData('两次输入密码不一致')
     }
 
-    let userInfo = await User.findOneAndUpdate(
+    const userInfo = await User.findOneAndUpdate(
       { mobile: mobile, password: oldPassowrd, deleted: false },
       { $set: { password: trim(password) } }
     )
@@ -187,7 +193,7 @@ export default class UserController extends BaseController {
       throw Boom.badData('用户不存在或旧密码错误')
     }
 
-    let token = await this.app.jwt.sign(
+    const token = await this.app.jwt.sign(
       { mobile: userInfo.mobile, password: userInfo.password },
       this.app.config.jwt.secret
     )
@@ -205,16 +211,16 @@ export default class UserController extends BaseController {
    * @response 200 responseBody 返回值
    */
   public async update() {
-    let { ctx } = this
+    const { ctx } = this
     ctx.validate({
       sex: { type: 'number' },
       nickname: { type: 'string', min: 3, max: 20 },
       head_image: { type: 'string' },
     })
-    // let { sex, nickname, head_image } = ctx.request.body
-    let { mobile } = ctx.state.user
+    // const { sex, nickname, head_image } = ctx.request.body
+    const { mobile } = ctx.state.user
 
-    let userInfo = await User.findOneAndUpdate(
+    const userInfo = await User.findOneAndUpdate(
       { mobile: mobile },
       { $set: ctx.request.body }
     ).lean()
@@ -225,19 +231,83 @@ export default class UserController extends BaseController {
   }
 
   /**
-   * @summary 修改用户资料
+   * @summary 获取用户资料
    * @description
    * @router get /user/info
+   * @request query string *user 用户id
    * @response 200 responseBody 返回值
    */
   public async getUserInfo() {
-    let { ctx } = this
-    let { mobile } = ctx.state.user
-    console.log('mobile:', mobile)
-    let userInfo = await User.findOne({ mobile: mobile }).lean()
+    const { ctx } = this
+    ctx.validate(
+      {
+        user: { type: 'string', required: true },
+      },
+      ctx.query
+    )
+    const { user } = ctx.query
+    const userInfo = await User.findById(user).lean()
     if (!userInfo) {
       throw Boom.badData('用户不存在')
     }
     this.success({ user: userInfo }, '获取用户信息成功')
+  }
+  /**
+   * @summary 关注用户
+   * @description 为了扩展方便，添加关注的同时也添加被关注用户的粉丝表, 主要是为了后续分表方便
+   * @router put /user/favourite
+   * @request formData string *followed_user 被关注的用户id
+   * @request formData string status 是否关注, 默认 true, 传 false 则取消关注
+   * @response 200 responseBody 返回值
+   */
+  public async favouriteUser() {
+    const { ctx } = this
+    const { id } = ctx.state.user
+    ctx.validate({
+      followed_user: { type: 'string', required: true },
+      status: { type: 'bool', default: true },
+    })
+    const { followed_user, status } = ctx.body
+
+    // 为了扩展方便，添加关注的同时也添加被关注用户的粉丝表, 主要是为了后续分表方便
+    try {
+      await UserFavourite.findOneAndUpdate(
+        {
+          user: id,
+          followed_user,
+        },
+        {
+          $setOnInsert: {
+            user: id,
+            followed_user,
+          },
+          $set: {
+            status,
+          },
+        },
+        { upsert: true, new: true }
+      )
+
+      await UserFans.findOneAndUpdate(
+        {
+          user: followed_user,
+          follower: id,
+        },
+        {
+          $setOnInsert: {
+            user: followed_user,
+            follower: id,
+          },
+          $set: {
+            status,
+          },
+        },
+        { upsert: true, new: true }
+      )
+      const message = status ? '已关注用户' : '已取消关注用户'
+      this.success('操作成功', message)
+    } catch (err) {
+      throw Boom.badData('用户可能不存在，请稍后再试')
+    }
   }
 }
