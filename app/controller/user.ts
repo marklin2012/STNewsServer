@@ -263,11 +263,12 @@ export default class UserController extends BaseController {
   public async favouriteUser() {
     const { ctx } = this
     const { id } = ctx.state.user
+    console.log('fav:', ctx.request)
     ctx.validate({
       followed_user: { type: 'string', required: true },
-      status: { type: 'bool', default: true },
+      status: { type: 'bool', default: true, required: false },
     })
-    const { followed_user, status } = ctx.body
+    const { followed_user, status } = ctx.request.body
 
     // 为了扩展方便，添加关注的同时也添加被关注用户的粉丝表, 主要是为了后续分表方便
     try {
