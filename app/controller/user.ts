@@ -122,7 +122,7 @@ export default class UserController extends BaseController {
 
     const { password, re_password: rePassword } = ctx.request.body
     const { mobile } = ctx.state.user
-    if (trim(password) == trim(rePassword)) {
+    if (trim(password) != trim(rePassword)) {
       throw Boom.badData('两次输入密码不一致')
     }
     const userInfo = await User.findOneAndUpdate(
@@ -132,12 +132,8 @@ export default class UserController extends BaseController {
     if (!userInfo) {
       throw Boom.badData('用户不存在')
     }
-    const token = await signUser(
-      this.app.jwt,
-      userInfo,
-      this.app.config.jwt.secret
-    )
-    this.success({ token }, '修改密码成功')
+
+    this.success('成功修改密码', '成功修改密码')
   }
 
   /**
