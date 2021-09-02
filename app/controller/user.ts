@@ -229,9 +229,9 @@ export default class UserController extends BaseController {
   public async update() {
     const { ctx } = this
     ctx.validate({
-      sex: { type: 'number' },
-      nickname: { type: 'string', min: 3, max: 20 },
-      head_image: { type: 'string' },
+      sex: { type: 'number', required: false },
+      nickname: { type: 'string', min: 3, max: 20, required: false },
+      head_image: { type: 'string', required: false },
     })
     // const { sex, nickname, head_image } = ctx.request.body
     const { mobile } = ctx.state.user
