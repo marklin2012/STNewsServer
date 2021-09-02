@@ -158,6 +158,26 @@ export default class UserController extends BaseController {
   }
 
   /**
+   * @summary 验证验证码
+   * @description
+   * @router post /checkcode/verify
+   * @request formData string *code 验证码
+   * @response 200 responseBody 返回值
+   */
+  public async checkCheckcode() {
+    const { ctx } = this
+    ctx.validate({
+      code: { type: 'string', required: true },
+    })
+    const { code } = ctx.request.body
+    if (code == '000000') {
+      this.success('验证码通过', '验证码通过')
+    } else {
+      throw Boom.badData('验证码验证失败')
+    }
+  }
+
+  /**
    * @summary 修改密码 （暂时停用）
    * @description
    * @router post /user/password/modify
