@@ -28,7 +28,7 @@ export class User extends BaseModel {
   @prop()
   public avatar?: string
 
-  // 性别  0：女 1：男
+  // 性别 0:未知 1:男 2:女
   @prop({ default: 0 })
   public sex: number
 
