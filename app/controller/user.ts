@@ -221,7 +221,7 @@ export default class UserController extends BaseController {
    * @summary 修改用户资料
    * @description
    * @router put /user/update
-   * @request formData string sex 性别
+   * @request formData number sex 性别
    * @request formData string nickname 昵称
    * @request formData string head_image 头像地址
    * @response 200 responseBody 返回值
