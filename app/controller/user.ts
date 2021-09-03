@@ -238,7 +238,8 @@ export default class UserController extends BaseController {
 
     const userInfo = await User.findOneAndUpdate(
       { mobile: mobile },
-      { $set: ctx.request.body }
+      { $set: ctx.request.body },
+      { new: true }
     ).lean()
     if (!userInfo) {
       throw Boom.badData('用户不存在')
