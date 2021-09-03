@@ -359,6 +359,12 @@ export default class UserController extends BaseController {
     )
   }
 
+  /**
+   * @summary 获取自己关注的文章
+   * @description
+   * @router get /user/favourite/post
+   * @response 200 responseBody 返回值
+   */
   public async getFavouritePosts() {
     const { ctx } = this
     const { per_page, skip } = ctx.state
