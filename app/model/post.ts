@@ -38,7 +38,7 @@ export class Post extends BaseModel {
 
   // 头图
   @prop({ default: [] })
-  public head_images?: String[]
+  public head_images?: string[]
 
   // 是否删除
   @prop({
