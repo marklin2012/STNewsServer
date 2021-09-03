@@ -6,6 +6,7 @@ import { defaultNickNameWithMobile } from '../utils/nickname'
 import { signUser } from '../utils/sign_jwt'
 import UserFavourite from '../model/user_favourite'
 import UserFans from '../model/user_fans'
+import PostFavourite from '../model/post_favourite'
 
 /**
  * @controller UserController
@@ -355,6 +356,31 @@ export default class UserController extends BaseController {
         favourites: users,
       },
       '成功获取关注列表'
+    )
+  }
+
+  public async getFavouritePosts() {
+    const { ctx } = this
+    const { per_page, skip } = ctx.state
+    const { id } = ctx.state.user
+    const res = await PostFavourite.find(
+      {
+        user: id,
+        status: true,
+      },
+      { post: 1 }
+    )
+      .limit(per_page)
+      .skip(skip)
+      .populate('post')
+      .lean()
+
+    const posts = map(res, (item) => item.post)
+    this.success(
+      {
+        favourites: posts,
+      },
+      '成功获取收藏列表文章'
     )
   }
 }
