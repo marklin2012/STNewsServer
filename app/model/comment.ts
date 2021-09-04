@@ -21,11 +21,11 @@ export class Comment extends BaseModel {
   public user: Ref<User>
 
   // 发布日期
-  @prop({ required: true })
-  public published_date: string
+  @prop({ required: true, auto: true })
+  public published_date: Date
 
   // 是否置顶
-  @prop()
+  @prop({ default: false })
   public is_top: boolean
 
   // 是否删除
