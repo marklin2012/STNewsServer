@@ -3,6 +3,7 @@
 
 import 'egg';
 import ExportBaseController from '../../../app/controller/base_controller';
+import ExportComment from '../../../app/controller/comment';
 import ExportHome from '../../../app/controller/home';
 import ExportPost from '../../../app/controller/post';
 import ExportTest from '../../../app/controller/test';
@@ -11,6 +12,7 @@ import ExportUser from '../../../app/controller/user';
 declare module 'egg' {
   interface IController {
     baseController: ExportBaseController;
+    comment: ExportComment;
     home: ExportHome;
     post: ExportPost;
     test: ExportTest;

@@ -21,4 +21,6 @@ export default (app: Application) => {
   router.get('/post/list', controller.post.list)
   router.get('/post/:_id', controller.post.getPostById)
   router.put('/post/favourite', controller.post.favouritePost)
+  // 评论相关
+  router.post('/comment/add', controller.comment.addComment)
 }
