@@ -11,8 +11,8 @@ export default class PostController extends BaseController {
   /**
    * @summary 获取文章列表
    * @description
-   * @router get /
-   * @request query integer field_name desc
+   * @router get /post/list
+   * @response 200 responseBody 返回值
    */
   public async list() {
     const { ctx } = this
@@ -20,6 +20,30 @@ export default class PostController extends BaseController {
     const result = await Post.find().limit(per_page).skip(skip).lean()
     this.success(result)
   }
+
+  /**
+   * @summary 获取文章详情
+   * @description
+   * @router get /post/:id
+   * @request params id _id 文章id
+   * @response 200 responseBody 返回值
+   */
+  public async getPostById() {
+    const { ctx } = this
+    ctx.validate(
+      {
+        _id: { type: 'id', required: true },
+      },
+      ctx.params
+    )
+    const { _id } = ctx.params
+    const res = await Post.findById(_id).lean()
+    if (!res) {
+      throw Boom.badData('文章可能不存在， 请确认后重新获取')
+    }
+    this.success({ post: res }, '获取文章详情成功')
+  }
+
   /**
    * @summary 收藏文章
    * @description

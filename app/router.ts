@@ -19,5 +19,6 @@ export default (app: Application) => {
   router.get('/user/favourite/post', controller.user.getFavouritePosts)
   // 文章相关
   router.get('/post/list', controller.post.list)
+  router.get('/post/:_id', controller.post.getPostById)
   router.put('/post/favourite', controller.post.favouritePost)
 }
