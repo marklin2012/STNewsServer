@@ -7,7 +7,7 @@ import { signUser } from '../utils/sign_jwt'
 import UserFavourite from '../model/user_favourite'
 import UserFans from '../model/user_fans'
 import PostFavourite from '../model/post_favourite'
-
+import Post from '../model/post'
 /**
  * @controller UserController
  */
@@ -268,7 +268,27 @@ export default class UserController extends BaseController {
     if (!userInfo) {
       throw Boom.badData('用户不存在')
     }
-    this.success({ user: userInfo }, '获取用户信息成功')
+    // 关注用户数
+    const followerCount =
+      (await UserFavourite.count({ user, status: false })) ?? 0
+    // 粉丝数
+    const fansCount =
+      (await UserFans.count({ follower: user, status: false })) ?? 0
+    // 最近发布文章
+    const posts =
+      (await Post.find({ author: user, deleted: false })
+        .limit(10)
+        .populate('author')
+        .lean()) ?? []
+    this.success(
+      {
+        user: userInfo,
+        followerCount: followerCount,
+        fansCount: fansCount,
+        post: posts,
+      },
+      '获取用户信息成功'
+    )
   }
   /**
    * @summary 关注用户
@@ -332,7 +352,7 @@ export default class UserController extends BaseController {
   /**
    * @summary 获取自己关注的用户
    * @description
-   * @router get /user/favourite
+   * @router get /user/favourite/list
    * @response 200 responseBody 返回值
    */
   public async geFavouriteUsers() {
