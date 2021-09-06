@@ -24,4 +24,6 @@ export default (app: Application) => {
   // 评论相关
   router.post('/comment/add', controller.comment.addComment)
   router.get('/comment/list', controller.comment.getCommentList)
+  // 上传
+  router.post('/file/upload', controller.file.uploadFile)
 }
