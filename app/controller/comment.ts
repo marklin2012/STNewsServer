@@ -1,6 +1,7 @@
 import * as Boom from '@hapi/boom'
 import BaseController from './base_controller'
 import Comment from '../model/comment'
+import CommentFavourite from '../model/comment_favourite'
 /**
  * @controller CommentController
  */
@@ -33,9 +34,9 @@ export default class CommentController extends BaseController {
   }
 
   /**
-   * @summary 创建文章评论
+   * @summary 获取文章评论列表
    * @description
-   * @router post /comment/list
+   * @router get /comment/list
    * @request query string *post 文章id
    * @response 200 responseBody 返回值
    */
@@ -69,5 +70,42 @@ export default class CommentController extends BaseController {
       },
       '获取评论列表'
     )
+  }
+
+  /**
+   * @summary 点赞评论
+   * @description
+   * @router post /comment/favourite
+   * @request formData string *comment 评论id
+   * @request formData string status 是否点赞 true 点赞， false 取消点赞
+   * @response 200 responseBody 返回值
+   */
+  public async favouriteComment() {
+    const { ctx } = this
+    ctx.validate({
+      comment: { type: 'id', required: true },
+      status: { type: 'bool', required: false, default: false },
+    })
+    const { comment, status } = ctx.request.body
+    const { id } = ctx.state.user
+
+    try {
+      await CommentFavourite.findOneAndUpdate(
+        { comment, user: id },
+        {
+          $setOnInsert: {
+            comment,
+            user: id,
+          },
+          $set: {
+            status,
+          },
+        }
+      )
+      const message = status ? '已收藏该评论' : '已取消收藏该评论'
+      this.success('操作成功', message)
+    } catch (err) {
+      throw Boom.badData('用户或文章可能不存在，请稍后再试')
+    }
   }
 }

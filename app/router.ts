@@ -23,6 +23,7 @@ export default (app: Application) => {
   router.put('/post/favourite', controller.post.favouritePost)
   // 评论相关
   router.post('/comment/add', controller.comment.addComment)
+  router.post('/comment/favourite', controller.comment.favouriteComment)
   router.get('/comment/list', controller.comment.getCommentList)
   // 上传
   router.post('/file/upload', controller.file.uploadFile)
