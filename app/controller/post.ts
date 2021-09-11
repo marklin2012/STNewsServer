@@ -48,6 +48,8 @@ export default class PostController extends BaseController {
    * @summary 收藏文章
    * @description
    * @router put /post/favourite
+   * @request formData id *post 文章id
+   * @request formData bool status 是否收藏
    * @response 200 responseBody 返回值
    */
   public async favouritePost() {
