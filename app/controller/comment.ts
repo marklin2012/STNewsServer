@@ -18,7 +18,7 @@ export default class CommentController extends BaseController {
     const { ctx } = this
     ctx.validate({
       content: { type: 'string', required: true, max: 500 },
-      post: { type: 'id', required: true },
+      post: { type: 'string', required: true },
     })
     const { content, post } = ctx.request.body
     const { id } = ctx.state.user
@@ -44,7 +44,7 @@ export default class CommentController extends BaseController {
     const { ctx } = this
     ctx.validate(
       {
-        post: { type: 'id', required: true },
+        post: { type: 'string', required: true },
       },
       ctx.query
     )
@@ -83,7 +83,7 @@ export default class CommentController extends BaseController {
   public async favouriteComment() {
     const { ctx } = this
     ctx.validate({
-      comment: { type: 'id', required: true },
+      comment: { type: 'string', required: true },
       status: { type: 'bool', required: false, default: false },
     })
     const { comment, status } = ctx.request.body

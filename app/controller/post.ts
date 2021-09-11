@@ -32,7 +32,7 @@ export default class PostController extends BaseController {
     const { ctx } = this
     ctx.validate(
       {
-        _id: { type: 'id', required: true },
+        _id: { type: 'string', required: true },
       },
       ctx.params
     )
@@ -55,7 +55,7 @@ export default class PostController extends BaseController {
   public async favouritePost() {
     const { ctx } = this
     ctx.validate({
-      post: { type: 'id', required: true },
+      post: { type: 'string', required: true },
       status: { type: 'bool', required: false, default: true },
     })
     const { post, status } = ctx.request.body
