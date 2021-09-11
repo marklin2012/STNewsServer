@@ -17,38 +17,33 @@ export default class FileUpload extends BaseController {
   public async uploadFile() {
     const { ctx } = this
     const files = ctx.request.files
-    try {
-      let ext = ''
-      if (files[0].mime == 'image/png') {
-        ext = 'png'
-      } else if (files[0].mime == 'image/jpeg') {
-        ext = 'jpg'
-      } else {
-        throw Boom.badData('暂时仅支持 jpg 和 png 格式图片')
-      }
-      const file = fs.readFileSync(files[0].filepath)
-      const fileName = (new Date().getTime() + getRandom(8)).toString()
-      const documentPath = path.join(this.config.baseDir, 'app/public/upload')
-      if (!fs.existsSync(documentPath)) {
-        // console.log('没有文件夹, 成功创建文件夹')
-        fs.mkdirSync(documentPath)
-      }
-      // 目前保存方法为临时状态，
-      // ！！！更新代码后可能原来图片会消失被覆盖
-      // TODO: 后续换成图片服务器，
-      fs.writeFileSync(
-        path.join(
-          this.config.baseDir,
-          `app/public/upload`,
-          `${fileName}.${ext}`
-        ),
-        file
-      )
-      const imgUrl = `public/upload/${fileName}.${ext}`
 
-      this.success({ imgUrl }, 'success')
-    } catch (err) {
-      throw Boom.badData('上传图片发生错误', err)
+    let ext = ''
+    if (files[0].mime == 'image/png') {
+      ext = 'png'
+    } else if (files[0].mime == 'image/jpeg') {
+      ext = 'jpg'
+    } else if (files[0].mime == 'image/jpg') {
+      ext = 'jpg'
+    } else {
+      throw Boom.badData('暂时仅支持 jpg 和 png 格式图片')
     }
+    const file = fs.readFileSync(files[0].filepath)
+    const fileName = (new Date().getTime() + getRandom(8)).toString()
+    const documentPath = path.join(this.config.baseDir, 'app/public/upload')
+    if (!fs.existsSync(documentPath)) {
+      // console.log('没有文件夹, 成功创建文件夹')
+      fs.mkdirSync(documentPath)
+    }
+    // 目前保存方法为临时状态，
+    // ！！！更新代码后可能原来图片会消失被覆盖
+    // TODO: 后续换成图片服务器，
+    fs.writeFileSync(
+      path.join(this.config.baseDir, `app/public/upload`, `${fileName}.${ext}`),
+      file
+    )
+    const imgUrl = `public/upload/${fileName}.${ext}`
+
+    this.success({ imgUrl }, 'success')
   }
 }
