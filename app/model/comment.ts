@@ -21,7 +21,7 @@ export class Comment extends BaseModel {
   public user: Ref<User>
 
   // 发布日期
-  @prop({ required: true, auto: true })
+  @prop({ required: true })
   public published_date: Date
 
   // 是否置顶

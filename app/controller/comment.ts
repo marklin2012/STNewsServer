@@ -26,6 +26,7 @@ export default class CommentController extends BaseController {
       post,
       content,
       user: id,
+      published_date: Date(),
     })
     if (!res) {
       throw Boom.badData('评论创建失败，请稍后再试')
