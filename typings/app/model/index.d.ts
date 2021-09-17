@@ -9,6 +9,7 @@ import ExportCommentFavourite from '../../../app/model/comment_favourite';
 import ExportConfig from '../../../app/model/config';
 import ExportPost from '../../../app/model/post';
 import ExportPostFavourite from '../../../app/model/post_favourite';
+import ExportPostThumbup from '../../../app/model/post_thumbup';
 import ExportUser from '../../../app/model/user';
 import ExportUserFans from '../../../app/model/user_fans';
 import ExportUserFavourite from '../../../app/model/user_favourite';
@@ -22,6 +23,7 @@ declare module 'egg' {
     Config: ReturnType<typeof ExportConfig>;
     Post: ReturnType<typeof ExportPost>;
     PostFavourite: ReturnType<typeof ExportPostFavourite>;
+    PostThumbup: ReturnType<typeof ExportPostThumbup>;
     User: ReturnType<typeof ExportUser>;
     UserFans: ReturnType<typeof ExportUserFans>;
     UserFavourite: ReturnType<typeof ExportUserFavourite>;
