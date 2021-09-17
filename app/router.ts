@@ -21,6 +21,8 @@ export default (app: Application) => {
   router.get('/post/list', controller.post.list)
   router.get('/post/:_id', controller.post.getPostById)
   router.put('/post/favourite', controller.post.favouritePost)
+  router.put('/post/thumbup', controller.post.thumbupPost)
+  router.get('/post/thumbup/:_id', controller.post.isThumbupPost)
   // 评论相关
   router.post('/comment/add', controller.comment.addComment)
   router.post('/comment/favourite', controller.comment.favouriteComment)

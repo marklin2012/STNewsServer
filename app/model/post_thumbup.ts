@@ -3,17 +3,17 @@ import BaseModel from './base_model'
 import { Post } from './post'
 import { User } from './user'
 
-// 文章收藏表
-export class PostFavourite extends BaseModel {
-  // 点收藏的用户
+// 文章点赞表
+export class PostThumbup extends BaseModel {
+  // 点赞的用户
   @prop({ required: true, ref: 'User' })
   public user: Ref<User>
 
-  // 被收藏的文章
+  // 被点赞的文章
   @prop({ required: true, ref: 'Post' })
   public post: Ref<Post>
 
-  // 是否收藏的状态
+  // 是否点赞的状态
   @prop({
     select: false,
     index: true,
@@ -22,4 +22,4 @@ export class PostFavourite extends BaseModel {
   public status?: boolean
 }
 
-export default getModelForClass(PostFavourite)
+export default getModelForClass(PostThumbup)
