@@ -101,7 +101,8 @@ export default class CommentController extends BaseController {
           $set: {
             status,
           },
-        }
+        },
+        { new: true, upsert: true }
       )
       const message = status ? '已收藏该评论' : '已取消收藏该评论'
       this.success('操作成功', message)
