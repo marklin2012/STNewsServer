@@ -2,6 +2,7 @@ import * as Boom from '@hapi/boom'
 import BaseController from './base_controller'
 import Comment from '../model/comment'
 import CommentFavourite from '../model/comment_favourite'
+import { map } from 'lodash'
 /**
  * @controller CommentController
  */
@@ -53,18 +54,42 @@ export default class CommentController extends BaseController {
     const { post } = ctx.query
 
     const { per_page, skip } = ctx.state
-    const res = await Comment.find({
+    const { id } = ctx.state.user
+    const comments = await Comment.find({
       post,
       deleted: false,
     })
       .limit(per_page)
       .skip(skip)
-      .populate('post', 'user')
+      .populate({ path: 'post', populate: { path: 'author' } })
+      .populate('user')
       .lean()
 
-    if (!res) {
+    if (!comments) {
       throw Boom.badData('找不到评论')
     }
+    const res = await Promise.all(
+      map(comments, async (comment) => {
+        let isFavComment = false
+        const commentFav = await CommentFavourite.findOne({
+          comment: comment._id,
+          user: id,
+          status: true,
+        })
+        if (commentFav) {
+          isFavComment = true
+        }
+        const commentFavCount = await CommentFavourite.count({
+          comment: comment._id,
+          status: true,
+        })
+        return {
+          ...comment,
+          isUserFavourite: isFavComment,
+          favouriteCount: commentFavCount,
+        }
+      })
+    )
     this.success(
       {
         comments: res,
