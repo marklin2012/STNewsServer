@@ -1,5 +1,6 @@
 import { prop, Ref, getModelForClass } from '@typegoose/typegoose'
 import BaseModel from './base_model'
+import { mongoConfig } from './config'
 import { User } from './user'
 
 // 分类表
@@ -21,4 +22,4 @@ export class UserFavourite extends BaseModel {
   public status?: boolean
 }
 
-export default getModelForClass(UserFavourite)
+export default getModelForClass(UserFavourite, mongoConfig)

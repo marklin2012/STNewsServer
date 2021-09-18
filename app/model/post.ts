@@ -1,6 +1,7 @@
 import { prop, Ref, getModelForClass } from '@typegoose/typegoose'
 import BaseModel from './base_model'
 import { Category } from './category'
+import { mongoConfig } from './config'
 import { User } from './user'
 
 export class Post extends BaseModel {
@@ -49,4 +50,4 @@ export class Post extends BaseModel {
   public deleted?: boolean
 }
 
-export default getModelForClass(Post)
+export default getModelForClass(Post, mongoConfig)

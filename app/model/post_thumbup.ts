@@ -1,5 +1,6 @@
 import { prop, Ref, getModelForClass } from '@typegoose/typegoose'
 import BaseModel from './base_model'
+import { mongoConfig } from './config'
 import { Post } from './post'
 import { User } from './user'
 
@@ -22,4 +23,4 @@ export class PostThumbup extends BaseModel {
   public status?: boolean
 }
 
-export default getModelForClass(PostThumbup)
+export default getModelForClass(PostThumbup, mongoConfig)

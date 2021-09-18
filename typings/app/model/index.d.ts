@@ -2,11 +2,13 @@
 // Do not modify this file!!!!!!!!!
 
 import 'egg';
+import ExportAnnouncement from '../../../app/model/announcement';
 import ExportBaseModel from '../../../app/model/base_model';
 import ExportCategory from '../../../app/model/category';
 import ExportComment from '../../../app/model/comment';
 import ExportCommentFavourite from '../../../app/model/comment_favourite';
 import ExportConfig from '../../../app/model/config';
+import ExportNotify from '../../../app/model/notify';
 import ExportPost from '../../../app/model/post';
 import ExportPostFavourite from '../../../app/model/post_favourite';
 import ExportPostThumbup from '../../../app/model/post_thumbup';
@@ -16,11 +18,13 @@ import ExportUserFavourite from '../../../app/model/user_favourite';
 
 declare module 'egg' {
   interface IModel {
+    Announcement: ReturnType<typeof ExportAnnouncement>;
     BaseModel: ReturnType<typeof ExportBaseModel>;
     Category: ReturnType<typeof ExportCategory>;
     Comment: ReturnType<typeof ExportComment>;
     CommentFavourite: ReturnType<typeof ExportCommentFavourite>;
     Config: ReturnType<typeof ExportConfig>;
+    Notify: ReturnType<typeof ExportNotify>;
     Post: ReturnType<typeof ExportPost>;
     PostFavourite: ReturnType<typeof ExportPostFavourite>;
     PostThumbup: ReturnType<typeof ExportPostThumbup>;

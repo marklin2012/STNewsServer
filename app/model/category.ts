@@ -1,5 +1,6 @@
 import { prop, getModelForClass } from '@typegoose/typegoose'
 import BaseModel from './base_model'
+import { mongoConfig } from './config'
 
 // 分类表
 export class Category extends BaseModel {
@@ -16,4 +17,4 @@ export class Category extends BaseModel {
   public deleted?: boolean
 }
 
-export default getModelForClass(Category)
+export default getModelForClass(Category, mongoConfig)

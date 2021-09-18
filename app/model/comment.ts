@@ -1,5 +1,6 @@
 import { prop, Ref, getModelForClass } from '@typegoose/typegoose'
 import BaseModel from './base_model'
+import { mongoConfig } from './config'
 import { Post } from './post'
 import { User } from './user'
 
@@ -37,4 +38,4 @@ export class Comment extends BaseModel {
   public deleted?: boolean
 }
 
-export default getModelForClass(Comment)
+export default getModelForClass(Comment, mongoConfig)
