@@ -4,6 +4,7 @@
 import 'egg';
 import ExportBaseController from '../../../app/controller/base_controller';
 import ExportComment from '../../../app/controller/comment';
+import ExportFeedback from '../../../app/controller/feedback';
 import ExportFile from '../../../app/controller/file';
 import ExportHome from '../../../app/controller/home';
 import ExportNotification from '../../../app/controller/notification';
@@ -15,6 +16,7 @@ declare module 'egg' {
   interface IController {
     baseController: ExportBaseController;
     comment: ExportComment;
+    feedback: ExportFeedback;
     file: ExportFile;
     home: ExportHome;
     notification: ExportNotification;

@@ -34,4 +34,6 @@ export default (app: Application) => {
   router.post('/annoucement/add', controller.notification.addAnnouncement)
   router.get('/notify/list', controller.notification.getUserNotify)
   router.put('/notify/readed', controller.notification.notifyReaded)
+  // 反馈
+  router.post('/feedback', controller.feedback.feedback)
 }
