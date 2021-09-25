@@ -8,7 +8,7 @@ import ExportCategory from '../../../app/model/category';
 import ExportComment from '../../../app/model/comment';
 import ExportCommentFavourite from '../../../app/model/comment_favourite';
 import ExportConfig from '../../../app/model/config';
-import ExportNotify from '../../../app/model/notify';
+import ExportNotification from '../../../app/model/notification';
 import ExportPost from '../../../app/model/post';
 import ExportPostFavourite from '../../../app/model/post_favourite';
 import ExportPostThumbup from '../../../app/model/post_thumbup';
@@ -24,7 +24,7 @@ declare module 'egg' {
     Comment: ReturnType<typeof ExportComment>;
     CommentFavourite: ReturnType<typeof ExportCommentFavourite>;
     Config: ReturnType<typeof ExportConfig>;
-    Notify: ReturnType<typeof ExportNotify>;
+    Notification: ReturnType<typeof ExportNotification>;
     Post: ReturnType<typeof ExportPost>;
     PostFavourite: ReturnType<typeof ExportPostFavourite>;
     PostThumbup: ReturnType<typeof ExportPostThumbup>;

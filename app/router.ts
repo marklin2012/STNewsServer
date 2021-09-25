@@ -29,4 +29,8 @@ export default (app: Application) => {
   router.get('/comment/list', controller.comment.getCommentList)
   // 上传
   router.post('/file/upload', controller.file.uploadFile)
+  // 消息提醒
+  router.post('/annoucement/add', controller.notification.addAnnouncement)
+  router.get('/notify/list', controller.notification.getUserNotify)
+  router.put('/notify/readed', controller.notification.notifyReaded)
 }

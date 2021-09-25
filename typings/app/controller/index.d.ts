@@ -6,7 +6,7 @@ import ExportBaseController from '../../../app/controller/base_controller';
 import ExportComment from '../../../app/controller/comment';
 import ExportFile from '../../../app/controller/file';
 import ExportHome from '../../../app/controller/home';
-import ExportNotify from '../../../app/controller/notify';
+import ExportNotification from '../../../app/controller/notification';
 import ExportPost from '../../../app/controller/post';
 import ExportTest from '../../../app/controller/test';
 import ExportUser from '../../../app/controller/user';
@@ -17,7 +17,7 @@ declare module 'egg' {
     comment: ExportComment;
     file: ExportFile;
     home: ExportHome;
-    notify: ExportNotify;
+    notification: ExportNotification;
     post: ExportPost;
     test: ExportTest;
     user: ExportUser;
