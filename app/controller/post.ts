@@ -31,7 +31,7 @@ export default class PostController extends BaseController {
   /**
    * @summary 获取 Banner 列表
    * @description
-   * @router get /post/banners
+   * @router get /post/banner
    * @response 200 responseBody 返回值
    */
   public async bannerList() {
@@ -181,6 +181,39 @@ export default class PostController extends BaseController {
         this.success({ isThumbup: false }, '该文章未点赞')
       } else {
         this.success({ isThumbup: true }, '该文章已点赞')
+      }
+    } catch (err) {
+      throw Boom.badData('用户或文章可能不存在，请稍后再试')
+    }
+  }
+
+  /**
+   * @summary 是否收藏文章
+   * @description
+   * @router get /post/favourite/:id
+   * @request params id *_id 文章id
+   * @response 200 responseBody 返回值
+   */
+  public async isFavouritePost() {
+    const { ctx } = this
+    ctx.validate(
+      {
+        _id: { type: 'string', required: true },
+      },
+      ctx.params
+    )
+    const { _id: postId } = ctx.params
+    const { id: userId } = ctx.state.user
+    try {
+      const res = await PostFavourite.findOne({
+        post: postId,
+        user: userId,
+        status: true,
+      })
+      if (!res) {
+        this.success({ isFavourite: false }, '该文章未收藏')
+      } else {
+        this.success({ isFavourite: true }, '该文章已收藏')
       }
     } catch (err) {
       throw Boom.badData('用户或文章可能不存在，请稍后再试')

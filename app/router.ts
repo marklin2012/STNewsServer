@@ -21,6 +21,7 @@ export default (app: Application) => {
   router.get('/post/list', controller.post.list)
   router.get('/post/banner', controller.post.bannerList)
   router.get('/post/:_id', controller.post.getPostById)
+  router.get('/post/favourite/:_id', controller.post.isFavouritePost)
   router.put('/post/favourite', controller.post.favouritePost)
   router.put('/post/thumbup', controller.post.thumbupPost)
   router.get('/post/thumbup/:_id', controller.post.isThumbupPost)
