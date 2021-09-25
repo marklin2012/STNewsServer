@@ -13,9 +13,13 @@ export class Announcement extends BaseModel {
   @prop({ required: true })
   public title: string
 
-  // 消息标题
-  @prop({ required: true, default: '' })
-  public content: string
+  // 消息描述
+  @prop({ required: false, default: '' })
+  public subscript?: string
+
+  // 消息内容
+  @prop({ required: false, default: '' })
+  public content?: string
 
   // 是否删除
   @prop({
