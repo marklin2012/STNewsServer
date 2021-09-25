@@ -73,7 +73,7 @@ export default class PostController extends BaseController {
             status,
           },
         },
-        { new: true, upsert: true }
+        { new: true, upsert: true, timestamps: true }
       )
       const message = status ? '已收藏该文章' : '已取消收藏该文章'
       this.success({ isFavourite: status }, message)
