@@ -8,6 +8,7 @@ enum NotiType {
   system = 'sys', // 系统消息
   favourite = 'fav', // 收藏事件
   thumbup = 'up', // 点赞事件
+  comment = 'comment', // 评论事件
 }
 
 // 用户公告表(消息提醒)
@@ -29,7 +30,11 @@ export class Notification extends BaseModel {
   public readAt?: Date
 
   //
-  @prop({ required: false, enum: ['sys', 'fav', 'up'], default: 'sys' })
+  @prop({
+    required: false,
+    enum: ['sys', 'fav', 'up', 'comment'],
+    default: 'sys',
+  })
   public type?: NotiType
 
   //备注

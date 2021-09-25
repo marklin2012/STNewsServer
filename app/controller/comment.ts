@@ -3,6 +3,10 @@ import BaseController from './base_controller'
 import Comment from '../model/comment'
 import CommentFavourite from '../model/comment_favourite'
 import { map } from 'lodash'
+import User from '../model/user'
+import Notification from '../model/notification'
+import Post from '../model/post'
+
 /**
  * @controller CommentController
  */
@@ -32,6 +36,19 @@ export default class CommentController extends BaseController {
     if (!res) {
       throw Boom.badData('评论创建失败，请稍后再试')
     }
+
+    // 添加评论消息
+    try {
+      const user = await User.findById(id)
+      const postObj = await Post.findById(post)
+      if (user && postObj) {
+        await Notification.create({
+          type: 'comment',
+          recipientID: postObj.author,
+          description: `${user.nickname}评论了您的文章 《${postObj.title}》`,
+        })
+      }
+    } catch (err) {}
     this.success({ comment: res.toJSON() }, '成功创建评论')
   }
 
@@ -115,24 +132,36 @@ export default class CommentController extends BaseController {
     const { comment, status } = ctx.request.body
     const { id } = ctx.state.user
 
-    try {
-      await CommentFavourite.findOneAndUpdate(
-        { comment, user: id },
-        {
-          $setOnInsert: {
-            comment,
-            user: id,
-          },
-          $set: {
-            status,
-          },
+    await CommentFavourite.findOneAndUpdate(
+      { comment, user: id },
+      {
+        $setOnInsert: {
+          comment,
+          user: id,
         },
-        { new: true, upsert: true }
-      )
-      const message = status ? '已收藏该评论' : '已取消收藏该评论'
-      this.success('操作成功', message)
-    } catch (err) {
-      throw Boom.badData('用户或文章可能不存在，请稍后再试')
-    }
+        $set: {
+          status,
+        },
+      },
+      { new: true, upsert: true }
+    )
+
+    // 添加点赞评论消息
+    try {
+      const user = await User.findById(id)
+      const commentObj = await Comment.findById(comment)
+      if (commentObj) {
+        const postObj = await Post.findById(commentObj.post)
+        if (user && postObj) {
+          await Notification.create({
+            type: 'comment',
+            recipientID: comment.user,
+            description: `${user.nickname}点赞了您对文章 《${postObj.title}》的评论`,
+          })
+        }
+      }
+    } catch (err) {}
+    const message = status ? '已收藏该评论' : '已取消收藏该评论'
+    this.success('操作成功', message)
   }
 }

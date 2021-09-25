@@ -1,7 +1,9 @@
 import * as Boom from '@hapi/boom'
+import Notification from '../model/notification'
 import Post from '../model/post'
 import PostFavourite from '../model/post_favourite'
 import PostThumbup from '../model/post_thumbup'
+import User from '../model/user'
 import BaseController from './base_controller'
 
 /**
@@ -61,25 +63,34 @@ export default class PostController extends BaseController {
     })
     const { post, status } = ctx.request.body
     const { id } = ctx.state.user
-    try {
-      await PostFavourite.findOneAndUpdate(
-        { post, user: id },
-        {
-          $setOnInsert: {
-            post,
-            user: id,
-          },
-          $set: {
-            status,
-          },
+    await PostFavourite.findOneAndUpdate(
+      { post, user: id },
+      {
+        $setOnInsert: {
+          post,
+          user: id,
         },
-        { new: true, upsert: true, timestamps: true }
-      )
-      const message = status ? '已收藏该文章' : '已取消收藏该文章'
-      this.success({ isFavourite: status }, message)
-    } catch (err) {
-      throw Boom.badData('用户或文章可能不存在，请稍后再试')
-    }
+        $set: {
+          status,
+        },
+      },
+      { new: true, upsert: true, timestamps: true }
+    )
+    // 添加收藏消息
+    try {
+      const user = await User.findById(id)
+      const postObj = await Post.findById(post)
+      if (user && postObj) {
+        await Notification.create({
+          type: 'fav',
+          recipientID: postObj.author,
+          description: `${user.nickname}收藏了您的文章 《${postObj.title}》`,
+        })
+      }
+    } catch (err) {}
+
+    const message = status ? '已收藏该文章' : '已取消收藏该文章'
+    this.success({ isFavourite: status }, message)
   }
 
   /**
@@ -98,25 +109,34 @@ export default class PostController extends BaseController {
     })
     const { post, status } = ctx.request.body
     const { id } = ctx.state.user
-    try {
-      await PostThumbup.findOneAndUpdate(
-        { post, user: id },
-        {
-          $setOnInsert: {
-            post,
-            user: id,
-          },
-          $set: {
-            status,
-          },
+
+    await PostThumbup.findOneAndUpdate(
+      { post, user: id },
+      {
+        $setOnInsert: {
+          post,
+          user: id,
         },
-        { new: true, upsert: true }
-      )
-      const message = status ? '已点赞该文章' : '已取消点赞该文章'
-      this.success({ isThumbup: status }, message)
-    } catch (err) {
-      throw Boom.badData('用户或文章可能不存在，请稍后再试')
-    }
+        $set: {
+          status,
+        },
+      },
+      { new: true, upsert: true }
+    )
+    // 添加点赞消息
+    try {
+      const user = await User.findById(id)
+      const postObj = await Post.findById(post)
+      if (user && postObj) {
+        await Notification.create({
+          type: 'up',
+          recipientID: postObj.author,
+          description: `${user.nickname}点赞了您的文章 《${postObj.title}》`,
+        })
+      }
+    } catch (err) {}
+    const message = status ? '已点赞该文章' : '已取消点赞该文章'
+    this.success({ isThumbup: status }, message)
   }
 
   /**

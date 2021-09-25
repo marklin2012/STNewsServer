@@ -48,7 +48,7 @@ export default class NotifyController extends BaseController {
 
   /**
   * @summary 获取公告
-  * @description 返回值 type 为 sys 系统消息, fav 收藏事件, up 点赞事件
+  * @description 返回值 type 为 sys 系统消息, fav 收藏事件, up 点赞事件， comment 评论
   * @router get /notify/list
 
   */
@@ -112,7 +112,7 @@ export default class NotifyController extends BaseController {
   * @summary 公告已读
   * @description 
   * @router put /notify/readed
-  * @reuest formData string *_id 消息ID
+  * @reuest formData string *id 消息ID
  
   */
   public async notifyReaded() {
