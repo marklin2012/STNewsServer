@@ -398,7 +398,7 @@ export default class UserController extends BaseController {
     )
       .limit(per_page)
       .skip(skip)
-      .populate('post')
+      .populate({ path: 'post', populate: { path: 'author' } })
       .lean()
 
     const posts = map(res, (item) => item.post)
