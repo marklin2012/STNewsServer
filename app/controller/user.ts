@@ -224,7 +224,7 @@ export default class UserController extends BaseController {
    * @router put /user/update
    * @request formData number sex 性别
    * @request formData string nickname 昵称
-   * @request formData string head_image 头像地址
+   * @request formData string avatar 头像地址
    * @response 200 responseBody 返回值
    */
   public async update() {
@@ -232,7 +232,7 @@ export default class UserController extends BaseController {
     ctx.validate({
       sex: { type: 'number', required: false },
       nickname: { type: 'string', min: 3, max: 20, required: false },
-      head_image: { type: 'string', required: false },
+      avatar: { type: 'string', required: false },
     })
     // const { sex, nickname, head_image } = ctx.request.body
     const { mobile } = ctx.state.user
