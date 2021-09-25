@@ -20,8 +20,23 @@ export default class PostController extends BaseController {
   public async list() {
     const { ctx } = this
     const { per_page, skip } = ctx.state
-    const result = await Post.find().limit(per_page).skip(skip).lean()
+    const result = await Post.find()
+      .populate('author')
+      .limit(per_page)
+      .skip(skip)
+      .lean()
     this.success(result)
+  }
+
+  /**
+   * @summary 获取 Banner 列表
+   * @description
+   * @router get /post/banners
+   * @response 200 responseBody 返回值
+   */
+  public async bannerList() {
+    const result = await Post.find().limit(5).populate('author').lean()
+    this.success(result, '成功拉取 Banner 列表')
   }
 
   /**
@@ -40,7 +55,7 @@ export default class PostController extends BaseController {
       ctx.params
     )
     const { _id } = ctx.params
-    const res = await Post.findById(_id).lean()
+    const res = await Post.findById(_id).populate('author').lean()
     if (!res) {
       throw Boom.badData('文章可能不存在， 请确认后重新获取')
     }
