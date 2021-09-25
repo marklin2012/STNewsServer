@@ -270,10 +270,10 @@ export default class UserController extends BaseController {
     }
     // 关注用户数
     const followerCount =
-      (await UserFavourite.count({ user, status: false })) ?? 0
+      (await UserFavourite.count({ user, status: true })) ?? 0
     // 粉丝数
     const fansCount =
-      (await UserFans.count({ follower: user, status: false })) ?? 0
+      (await UserFans.count({ follower: user, status: true })) ?? 0
     // 最近发布文章
     const posts =
       (await Post.find({ author: user, deleted: false })
