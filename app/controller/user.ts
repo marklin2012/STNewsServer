@@ -138,6 +138,39 @@ export default class UserController extends BaseController {
   }
 
   /**
+   * @summary 忘记密码中设置密码（该接口有危险，后续处理）
+   * @description
+   * @router post /user/forget/password
+   * @request formData string *mobile 手机号
+   * @request formData string *password 密码
+   * @request formData string *re_password 验证密码
+   * @response 200 responseBody 返回值
+   */
+  public async setForgetPassword() {
+    const { ctx } = this
+
+    ctx.validate({
+      mobile: { type: 'string', required: true },
+      password: { type: 'string', required: true },
+      re_password: { type: 'string', required: true },
+    })
+
+    const { mobile, password, re_password: rePassword } = ctx.request.body
+    if (trim(password) != trim(rePassword)) {
+      throw Boom.badData('两次输入密码不一致')
+    }
+    const userInfo = await User.findOneAndUpdate(
+      { mobile: mobile },
+      { $set: { password: trim(password) } }
+    )
+    if (!userInfo) {
+      throw Boom.badData('用户不存在')
+    }
+
+    this.success('成功修改密码', '成功修改密码')
+  }
+
+  /**
    * @summary 获取验证码
    * @description
    * @router get /checkcode

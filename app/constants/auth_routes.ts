@@ -12,4 +12,5 @@ export default [
   '/login/pin',
   '/checkcode',
   '/checkcode/verify',
+  '/user/forget/password',
 ]

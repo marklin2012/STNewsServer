@@ -11,6 +11,7 @@ export default (app: Application) => {
   router.get('/checkcode', controller.user.getCheckCode)
   router.post('/checkcode/verify', controller.user.checkCheckcode)
   router.post('/user/password', controller.user.setPassword)
+  router.post('/user/forget/password', controller.user.setForgetPassword)
   // 用户相关
   router.put('/user/update', controller.user.update)
   router.get('/user/info', controller.user.getUserInfo)
