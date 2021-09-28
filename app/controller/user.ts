@@ -179,9 +179,12 @@ export default class UserController extends BaseController {
    */
   public async getCheckCode() {
     const { ctx } = this
-    ctx.validate({
-      mobile: { type: 'string', required: true },
-    })
+    ctx.validate(
+      {
+        mobile: { type: 'string', required: true },
+      },
+      ctx.query
+    )
     const { mobile } = ctx.request.query
 
     this.success({ mobile, code: '000000' }, '成功发送验证码')
