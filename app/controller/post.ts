@@ -12,6 +12,36 @@ import BaseController from './base_controller'
 
 export default class PostController extends BaseController {
   /**
+   * @summary 创建文章列表
+   * @description
+   * @router post /post/add
+   * @request formData string *title 标题
+   * @request formData string *article 文章内容
+   * @request formData string *cover_image 封面图片
+   * @response 200 responseBody 返回值
+   */
+  public async add() {
+    const { ctx } = this
+    ctx.validate({
+      title: { type: 'string', required: true },
+      article: { type: 'string', required: true },
+      cover_image: { type: 'string', required: false },
+    })
+    const { title, article, cover_image } = ctx.request.body
+    const { id } = ctx.state.user
+    const result = await Post.create({
+      author: id,
+      title,
+      article,
+      cover_image,
+      published_date: new Date(),
+    })
+    if (!result) {
+      throw Boom.badData('创建文章失败')
+    }
+    this.success({ ok: 1, message: '创建文章成功' }, '文章创建成功')
+  }
+  /**
    * @summary 获取文章列表
    * @description
    * @router get /post/list
