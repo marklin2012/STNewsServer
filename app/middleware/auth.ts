@@ -5,9 +5,9 @@ import * as Boom from '@hapi/boom'
 
 export default (_, app) => {
   return async function (ctx: Context, next) {
-    const { url } = ctx
+    const { path } = ctx.request
     // 如果包含 路径， 则跳过 auth 验证
-    if (includes(authRoutes, url)) {
+    if (includes(authRoutes, path)) {
       await next()
     } else {
       const token = ctx.header.authorization
