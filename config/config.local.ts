@@ -2,6 +2,7 @@ import { EggAppConfig, PowerPartial } from 'egg'
 
 export default () => {
   const config: PowerPartial<EggAppConfig> = {}
+  config.keys = '_1628616862378_8189'
   config.swaggerdoc = {
     dirScanner: './app/controller',
     apiInfo: {
