@@ -24,5 +24,6 @@ export default () => {
       options: {},
     },
   }
+  config.proxy = true
   return config
 }
