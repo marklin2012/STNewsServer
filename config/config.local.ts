@@ -25,7 +25,5 @@ export default () => {
       options: {},
     },
   }
-  return {
-    ...config,
-  }
+  return config
 }
