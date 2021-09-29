@@ -5,5 +5,5 @@ const responseBody = {
 }
 
 module.exports = {
-  responseBody: responseBody,
+  responseBody,
 }

@@ -6,9 +6,9 @@ export default () => {
     try {
       await next()
     } catch (err) {
-      console.log('中间件: ', err)
-      if (!err) {
-        err = Boom.badImplementation()
+      let error = err
+      if (!error) {
+        error = Boom.badImplementation()
       }
 
       if (err.isBoom) {
@@ -20,7 +20,7 @@ export default () => {
           data: err.data ?? 'no data',
         }
       } else {
-        ctx.app.emit('error', err, ctx)
+        ctx.app.emit('error', error, ctx)
         const status = err.status || 500
         const message = err.message || 'Internal Server Error'
 

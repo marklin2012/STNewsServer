@@ -6,7 +6,7 @@ const MAX_PER_PAGE = 30
 const DEFAULT_PAGE_NUM = 1
 
 function paging(ctx: Context, next) {
-  if (ctx.method == 'GET') {
+  if (ctx.method === 'GET') {
     const { query } = ctx
     const limit =
       min([

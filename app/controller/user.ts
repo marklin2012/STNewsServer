@@ -39,7 +39,7 @@ export default class UserController extends BaseController {
       throw Boom.unauthorized('手机号对应用户不存在，或密码不正确')
     }
 
-    if (userInfo.password == '') {
+    if (userInfo.password === '') {
       throw Boom.badData('用户密码不存在，请用验证码登录并设置密码')
     }
 
@@ -49,7 +49,7 @@ export default class UserController extends BaseController {
       this.app.config.jwt.secret
     )
     const user = await userInfo.toJSON()
-    this.success({ token, user: user }, '登录成功')
+    this.success({ token, user }, '登录成功')
   }
 
   /**
@@ -70,8 +70,8 @@ export default class UserController extends BaseController {
 
     const { mobile, pin } = ctx.request.body
 
-    //暂时使用
-    if (pin != '000000') {
+    // 暂时使用
+    if (pin !== '000000') {
       throw Boom.badData('验证码不正确')
     }
 
@@ -102,7 +102,7 @@ export default class UserController extends BaseController {
       this.app.config.jwt.secret
     )
     const user = await userInfo.toJSON()
-    this.success({ token: token, user }, '登录成功')
+    this.success({ token, user }, '登录成功')
   }
 
   /**
@@ -123,11 +123,11 @@ export default class UserController extends BaseController {
 
     const { password, re_password: rePassword } = ctx.request.body
     const { mobile } = ctx.state.user
-    if (trim(password) != trim(rePassword)) {
+    if (trim(password) !== trim(rePassword)) {
       throw Boom.badData('两次输入密码不一致')
     }
     const userInfo = await User.findOneAndUpdate(
-      { mobile: mobile },
+      { mobile },
       { $set: { password: trim(password) } }
     )
     if (!userInfo) {
@@ -156,11 +156,11 @@ export default class UserController extends BaseController {
     })
 
     const { mobile, password, re_password: rePassword } = ctx.request.body
-    if (trim(password) != trim(rePassword)) {
+    if (trim(password) !== trim(rePassword)) {
       throw Boom.badData('两次输入密码不一致')
     }
     const userInfo = await User.findOneAndUpdate(
-      { mobile: mobile },
+      { mobile },
       { $set: { password: trim(password) } }
     )
     if (!userInfo) {
@@ -203,7 +203,7 @@ export default class UserController extends BaseController {
       code: { type: 'string', required: true },
     })
     const { code } = ctx.request.body
-    if (code == '000000') {
+    if (code === '000000') {
       this.success('验证码通过', '验证码通过')
     } else {
       throw Boom.badData('验证码验证失败')
@@ -234,12 +234,12 @@ export default class UserController extends BaseController {
     } = ctx.request.body
     const { mobile } = ctx.state.user
 
-    if (trim(rePassword) != trim(password)) {
+    if (trim(rePassword) !== trim(password)) {
       throw Boom.badData('两次输入密码不一致')
     }
 
     const userInfo = await User.findOneAndUpdate(
-      { mobile: mobile, password: oldPassowrd, deleted: false },
+      { mobile, password: oldPassowrd, deleted: false },
       { $set: { password: trim(password) } }
     )
     if (!userInfo) {
@@ -274,7 +274,7 @@ export default class UserController extends BaseController {
     const { mobile } = ctx.state.user
 
     const userInfo = await User.findOneAndUpdate(
-      { mobile: mobile },
+      { mobile },
       { $set: ctx.request.body },
       { new: true }
     ).lean()
@@ -319,8 +319,8 @@ export default class UserController extends BaseController {
     this.success(
       {
         user: userInfo,
-        followerCount: followerCount,
-        fansCount: fansCount,
+        followerCount,
+        fansCount,
         post: posts,
       },
       '获取用户信息成功'

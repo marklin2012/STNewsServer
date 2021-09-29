@@ -42,8 +42,10 @@
     "egg-bin": "^4.11.0",
     "egg-ci": "^1.8.0",
     "egg-mock": "^3.16.0",
+    "eslint": "^7.32.0",
     "eslint-config-egg": "^8.0.0",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
     "prettier": "^2.3.2",
     "tslib": "^1.9.0",
     "typescript": "^3.0.0"

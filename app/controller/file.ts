@@ -19,11 +19,11 @@ export default class FileUpload extends BaseController {
     const files = ctx.request.files
 
     let ext = ''
-    if (files[0].mime == 'image/png') {
+    if (files[0].mime === 'image/png') {
       ext = 'png'
-    } else if (files[0].mime == 'image/jpeg') {
+    } else if (files[0].mime === 'image/jpeg') {
       ext = 'jpg'
-    } else if (files[0].mime == 'image/jpg') {
+    } else if (files[0].mime === 'image/jpg') {
       ext = 'jpg'
     } else {
       throw Boom.badData('暂时仅支持 jpg 和 png 格式图片')

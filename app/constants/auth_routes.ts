@@ -13,4 +13,5 @@ export default [
   '/checkcode',
   '/checkcode/verify',
   '/user/forget/password',
+  '/',
 ]

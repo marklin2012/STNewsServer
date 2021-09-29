@@ -132,7 +132,9 @@ export default class PostController extends BaseController {
           description: `${user.nickname}收藏了您的文章 《${postObj.title}》`,
         })
       }
-    } catch (err) {}
+    } catch (err) {
+      console.log(err)
+    }
 
     const message = status ? '已收藏该文章' : '已取消收藏该文章'
     this.success({ isFavourite: status }, message)
@@ -179,7 +181,9 @@ export default class PostController extends BaseController {
           description: `${user.nickname}点赞了您的文章 《${postObj.title}》`,
         })
       }
-    } catch (err) {}
+    } catch (err) {
+      console.log(err)
+    }
     const message = status ? '已点赞该文章' : '已取消点赞该文章'
     this.success({ isThumbup: status }, message)
   }

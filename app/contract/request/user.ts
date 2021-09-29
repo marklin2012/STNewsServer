@@ -4,5 +4,5 @@ const loginPinRule = {
 }
 
 module.exports = {
-  loginPinRule: loginPinRule,
+  loginPinRule,
 }

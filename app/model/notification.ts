@@ -37,7 +37,7 @@ export class Notification extends BaseModel {
   })
   public type?: NotiType
 
-  //备注
+  // 备注
   @prop({ required: false, default: '' })
   public description?: string
 

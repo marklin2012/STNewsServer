@@ -48,7 +48,9 @@ export default class CommentController extends BaseController {
           description: `${user.nickname}评论了您的文章 《${postObj.title}》`,
         })
       }
-    } catch (err) {}
+    } catch (err) {
+      console.log(err)
+    }
     this.success({ comment: res.toJSON() }, '成功创建评论')
   }
 
@@ -160,7 +162,9 @@ export default class CommentController extends BaseController {
           })
         }
       }
-    } catch (err) {}
+    } catch (err) {
+      console.log(err)
+    }
     const message = status ? '已收藏该评论' : '已取消收藏该评论'
     this.success('操作成功', message)
   }
