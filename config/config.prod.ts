@@ -26,5 +26,7 @@ export default () => {
     },
   }
   config.proxy = true
-  return config
+  return {
+    ...config,
+  }
 }
