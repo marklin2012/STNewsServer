@@ -9,6 +9,7 @@ import ExportFile from '../../../app/controller/file';
 import ExportHome from '../../../app/controller/home';
 import ExportNotification from '../../../app/controller/notification';
 import ExportPost from '../../../app/controller/post';
+import ExportSearch from '../../../app/controller/search';
 import ExportTest from '../../../app/controller/test';
 import ExportUser from '../../../app/controller/user';
 
@@ -21,6 +22,7 @@ declare module 'egg' {
     home: ExportHome;
     notification: ExportNotification;
     post: ExportPost;
+    search: ExportSearch;
     test: ExportTest;
     user: ExportUser;
   }

@@ -39,4 +39,6 @@ export default (app: Application) => {
   router.put('/notify/readed', controller.notification.notifyReaded)
   // 反馈
   router.post('/feedback', controller.feedback.feedback)
+  // 搜索
+  router.get('/search', controller.search.search)
 }
