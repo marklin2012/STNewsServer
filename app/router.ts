@@ -41,4 +41,19 @@ export default (app: Application) => {
   router.post('/feedback', controller.feedback.feedback)
   // 搜索
   router.get('/search', controller.search.search)
+  // 圈子
+  router.post('/moment/add', controller.moment.add)
+  router.get('/moment/list', controller.moment.list)
+  router.get('/moment/:_id', controller.moment.getMomentById)
+  router.put('/moment/favourite', controller.moment.favouriteMoment)
+  router.put('/moment/thumbup', controller.moment.thumbupMoment)
+  router.get('/moment/thumbup/:_id', controller.moment.isThumbupMoment)
+  router.get('/moment/favourite/:id', controller.moment.isFavouriteMoment)
+  // 圈子评论
+  router.post('/comment_moment/add', controller.commentMoment.addComment)
+  router.get('/comment_moment/list', controller.commentMoment.getCommentList)
+  router.post(
+    '/comment_moment/favourite',
+    controller.commentMoment.favouriteComment
+  )
 }
