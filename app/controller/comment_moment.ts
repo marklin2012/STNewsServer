@@ -156,9 +156,15 @@ export default class CommentMomentController extends BaseController {
         }
       })
     )
+
+    const totalCounts = await CommentMoment.count({
+      moment,
+      deleted: false,
+    })
     this.success(
       {
         comments: res,
+        totalCounts,
       },
       '获取评论列表'
     )
