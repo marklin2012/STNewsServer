@@ -41,6 +41,7 @@ export default (app: Application) => {
   router.post('/feedback', controller.feedback.feedback)
   // 搜索
   router.get('/search', controller.search.search)
+  router.get('/search/moment', controller.search.searchMoment)
   // 圈子
   router.post('/moment/add', controller.moment.add)
   router.get('/moment/list', controller.moment.list)
