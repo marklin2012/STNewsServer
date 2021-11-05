@@ -5,6 +5,7 @@ import MomentThumbup from '../model/moment_thumbup'
 import Notification from '../model/notification'
 import User from '../model/user'
 import BaseController from './base_controller'
+import { map } from 'lodash'
 
 /**
  * @controller MomentController
@@ -66,7 +67,20 @@ export default class MomentController extends BaseController {
       .limit(per_page)
       .skip(skip)
       .lean()
-    this.success(result)
+    const res = await Promise.all(
+      map(result, async (moment) => {
+        const thumbUpCount =
+          (await MomentThumbup.count({
+            status: true,
+            moment: moment._id,
+          })) ?? 0
+        return {
+          ...moment,
+          thumbUpCount,
+        }
+      })
+    )
+    this.success(res)
   }
 
   /**
