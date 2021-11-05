@@ -7,7 +7,7 @@ import { signUser } from '../utils/sign_jwt'
 import UserFavourite from '../model/user_favourite'
 import UserFans from '../model/user_fans'
 import PostFavourite from '../model/post_favourite'
-import Post from '../model/post'
+import Moment from '../model/moment'
 /**
  * @controller UserController
  */
@@ -310,18 +310,18 @@ export default class UserController extends BaseController {
     // 粉丝数
     const fansCount =
       (await UserFans.count({ follower: user, status: true })) ?? 0
-    // 最近发布文章
-    const posts =
-      (await Post.find({ author: user, deleted: false })
+    // 最近发布的圈子
+    const moments =
+      (await Moment.find({ user, deleted: false })
         .limit(10)
-        .populate('author')
+        .populate('user')
         .lean()) ?? []
     this.success(
       {
         user: userInfo,
         followerCount,
         fansCount,
-        post: posts,
+        moments,
       },
       '获取用户信息成功'
     )
