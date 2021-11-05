@@ -101,16 +101,15 @@ export default class CommentMomentController extends BaseController {
       map(comments, async (comment) => {
         // 查找子评论
         const refComments = await CommentMoment.find({
-          reference: moment,
-          user: id,
-          status: true,
+          moment,
+          reference: comment._id,
+          deleted: false,
         })
           .populate({ path: 'moment', populate: { path: 'user' } })
           .populate('user')
           .populate({ path: 'comment', populate: { path: 'user' } })
           .populate({ path: 'reference', populate: { path: 'user' } })
           .lean()
-
         const results = await Promise.all(
           map(refComments, async (refComment) => {
             let isFavComment = false
