@@ -74,8 +74,19 @@ export default class MomentController extends BaseController {
             status: true,
             moment: moment._id,
           })) ?? 0
+        // 查看是否点赞
+        const res = await MomentThumbup.findOne({
+          moment: moment._id,
+          user: id,
+          status: true,
+        })
+        let isThumbUp = true
+        if (!res) {
+          isThumbUp = false
+        }
         return {
           ...moment,
+          isThumbUp,
           thumbUpCount,
         }
       })
