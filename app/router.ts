@@ -49,7 +49,7 @@ export default (app: Application) => {
   router.put('/moment/favourite', controller.moment.favouriteMoment)
   router.put('/moment/thumbup', controller.moment.thumbupMoment)
   router.get('/moment/thumbup/:_id', controller.moment.isThumbupMoment)
-  router.get('/moment/favourite/:id', controller.moment.isFavouriteMoment)
+  router.get('/moment/favourite/:_id', controller.moment.isFavouriteMoment)
   // 圈子评论
   router.post('/comment_moment/add', controller.commentMoment.addComment)
   router.get('/comment_moment/list', controller.commentMoment.getCommentList)
