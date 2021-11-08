@@ -40,10 +40,26 @@ brew install mongodb-community@5.0
 
 ```
 
-3. 启动 mondb 服务
+3. 安装 redis
+```ssh
+
+brew install redis
+
+```
+
+4. 启动 mondb 服务
 
 ```ssh
 brew services start mongodb-community@5.0
+
+```
+
+5. 启动 redis 服务
+
+```ssh
+brew services start redis
+redis-server
+
 ```
 
 # 如何安装
