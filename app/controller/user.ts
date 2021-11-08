@@ -8,6 +8,9 @@ import UserFavourite from '../model/user_favourite'
 import UserFans from '../model/user_fans'
 import PostFavourite from '../model/post_favourite'
 import Moment from '../model/moment'
+import MomentThumbup from '../model/moment_thumbup'
+import MomentFavourite from '../model/moment_favourite'
+import CommentMoment from '../model/comment_moment'
 /**
  * @controller UserController
  */
@@ -316,12 +319,37 @@ export default class UserController extends BaseController {
         .limit(10)
         .populate('user')
         .lean()) ?? []
+    const newMoments = await Promise.all(
+      map(moments, async (moment) => {
+        const thumbUpCount =
+          (await MomentThumbup.count({
+            status: true,
+            moment: moment._id,
+          })) ?? 0
+        const favouriteCount =
+          (await MomentFavourite.count({
+            status: true,
+            moment: moment._id,
+          })) ?? 0
+        const commentCount =
+          (await CommentMoment.count({
+            moment,
+            deleted: false,
+          })) ?? 0
+        return {
+          ...moment,
+          commentCount,
+          favouriteCount,
+          thumbUpCount,
+        }
+      })
+    )
     this.success(
       {
         user: userInfo,
         followerCount,
         fansCount,
-        moments,
+        moments: newMoments,
       },
       '获取用户信息成功'
     )
