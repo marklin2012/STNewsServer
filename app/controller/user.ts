@@ -326,21 +326,40 @@ export default class UserController extends BaseController {
             status: true,
             moment: moment._id,
           })) ?? 0
-        const favouriteCount =
-          (await MomentFavourite.count({
-            status: true,
-            moment: moment._id,
-          })) ?? 0
+
         const commentCount =
           (await CommentMoment.count({
             moment,
             deleted: false,
           })) ?? 0
+
+        // 用户是否收藏
+        let isFavourite = true
+        const momentFav = await MomentFavourite.findOne({
+          status: true,
+          user,
+          moment: moment._id,
+        })
+        if (!momentFav) {
+          isFavourite = false
+        }
+
+        // 用户是否点赞
+        let isThumbUp = true
+        const momentThumbup = await MomentThumbup.findOne({
+          status: true,
+          user,
+          moment: moment._id,
+        })
+        if (!momentThumbup) {
+          isThumbUp = false
+        }
         return {
           ...moment,
           commentCount,
-          favouriteCount,
           thumbUpCount,
+          isFavourite,
+          isThumbUp,
         }
       })
     )
