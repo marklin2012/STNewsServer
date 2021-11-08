@@ -33,6 +33,15 @@ export default (appInfo: EggAppInfo) => {
     },
   }
 
+  config.redis = {
+    client: {
+      port: 6379, // Redis port
+      host: '127.0.0.1', // Redis host
+      password: 'auth',
+      db: 0,
+    },
+  }
+
   // add your special config in here
   const bizConfig = {
     sourceUrl: `https://github.com/eggjs/examples/tree/master/${appInfo.name}`,
