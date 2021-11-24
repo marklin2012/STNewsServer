@@ -317,6 +317,7 @@ export default class UserController extends BaseController {
     const moments =
       (await Moment.find({ user, deleted: false })
         .limit(10)
+        .sort({ createdAt: -1 })
         .populate('user')
         .lean()) ?? []
     const newMoments = await Promise.all(

@@ -63,6 +63,7 @@ export default class MomentController extends BaseController {
     const result = await Moment.find({
       $or: [{ visibles: [] }, { visibles: { $in: [id] } }],
     })
+      .sort({ createdAt: -1 })
       .populate('user')
       .limit(per_page)
       .skip(skip)
