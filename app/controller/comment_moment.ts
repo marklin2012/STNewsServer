@@ -88,6 +88,7 @@ export default class CommentMomentController extends BaseController {
     })
       .limit(per_page)
       .skip(skip)
+      .sort({ createdAt: -1 })
       .populate({ path: 'moment', populate: { path: 'user' } })
       .populate('user')
       .populate({ path: 'comment', populate: { path: 'user' } })

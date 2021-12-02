@@ -80,6 +80,7 @@ export default class CommentController extends BaseController {
     })
       .limit(per_page)
       .skip(skip)
+      .sort({ createdAt: -1 })
       .populate({ path: 'post', populate: { path: 'author' } })
       .populate('user')
       .lean()
