@@ -62,6 +62,7 @@ export default class MomentController extends BaseController {
     const { per_page, skip } = ctx.state
     const { id } = ctx.state.user
     const result = await Moment.find({
+      deleted: false,
       $or: [{ visibles: [] }, { visibles: { $in: [id] } }],
     })
       .sort({ createdAt: -1 })
