@@ -51,6 +51,8 @@ export default (app: Application) => {
   router.put('/moment/thumbup', controller.moment.thumbupMoment)
   router.get('/moment/thumbup/:_id', controller.moment.isThumbupMoment)
   router.get('/moment/favourite/:_id', controller.moment.isFavouriteMoment)
+  router.put('/moment/update', controller.moment.update)
+  router.delete('/moment/delete', controller.moment.delete)
   // 圈子评论
   router.post('/comment_moment/add', controller.commentMoment.addComment)
   router.get('/comment_moment/list', controller.commentMoment.getCommentList)

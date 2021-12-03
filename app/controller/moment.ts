@@ -5,7 +5,7 @@ import MomentThumbup from '../model/moment_thumbup'
 import Notification from '../model/notification'
 import User from '../model/user'
 import BaseController from './base_controller'
-import { map } from 'lodash'
+import { identity, map, pickBy } from 'lodash'
 
 /**
  * @controller MomentController
@@ -18,7 +18,8 @@ export default class MomentController extends BaseController {
    * @router post /moment/add
    * @request formData string *title 标题
    * @request formData string *content 圈子内容
-   * @request formData string *images 圈子图片
+   * @request formData string images 圈子图片
+   * @request formData string visibles 可见权限
    * @response 200 responseBody 返回值
    */
   public async add() {
@@ -278,5 +279,68 @@ export default class MomentController extends BaseController {
     } catch (err) {
       throw Boom.badData('用户或圈子可能不存在，请稍后再试')
     }
+  }
+
+  /**
+   * @summary 更新圈子
+   * @description
+   * @router put /moment/update
+   * @request formData moment *moment 圈子id
+   * @request formData string title 标题
+   * @request formData string content 圈子内容
+   * @request formData string images 圈子图片
+   * @request formData string visibles 可见权限
+   * @response 200 responseBody 返回值
+   */
+  public async update() {
+    const { ctx } = this
+    ctx.validate({
+      moment: { type: 'string', required: true },
+      title: { type: 'string', required: false },
+      content: { type: 'string', required: false },
+      images: { type: 'array', itemType: 'string', required: false },
+      visibles: {
+        type: 'array',
+        itemType: 'string',
+        required: false,
+      },
+    })
+    const { moment, title, content, images, visibles } = ctx.request.body
+
+    const params = pickBy(
+      {
+        title,
+        content,
+        images,
+        visibles,
+      },
+      identity
+    )
+
+    const result = await Moment.findByIdAndUpdate(moment, params)
+    if (!result) {
+      throw Boom.badData('圈子更新失败')
+    }
+    this.success({ ok: 1, message: '圈子更新成功' }, '圈子更新成功')
+  }
+  /**
+   * @summary 删除圈子
+   * @description
+   * @router delete /moment/delete
+   * @request formData moment *moment 圈子id
+   * @response 200 responseBody 返回值
+   */
+  public async delete() {
+    const { ctx } = this
+    ctx.validate({
+      moment: { type: 'string', required: true },
+    })
+    const { moment } = ctx.request.body
+
+    const result = await Moment.findByIdAndUpdate(moment, { deleted: true })
+    if (!result) {
+      throw Boom.badData('圈子删除失败')
+    }
+    this.success({ ok: 1, message: '圈子删除成功' }, '圈子删除成功')
   }
 }
